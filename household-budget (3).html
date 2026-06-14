@@ -1,0 +1,2825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Household Budget — Millar Rutherford</title>
+<style>
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #0F6E56;
+    --red: #C0392B;
+    --red-light: #FDEDEC;
+    --amber: #E67E22;
+    --amber-light: #FEF5E7;
+    --blue: #2980B9;
+    --blue-light: #EBF5FB;
+    --gray-50: #F8F9FA;
+    --gray-100: #F1F2F3;
+    --gray-200: #E2E4E6;
+    --gray-400: #9AA0A6;
+    --gray-600: #5F6368;
+    --gray-900: #1A1A1A;
+    --white: #FFFFFF;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 52px;
+    gap: 4px;
+  }
+
+  .nav-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-right: 12px;
+    white-space: nowrap;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    color: var(--gray-600);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-tab:hover { background: var(--gray-100); }
+  .nav-tab.active { background: var(--green-light); color: var(--green-dark); }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+  }
+
+  /* METRIC GRID */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .metric {
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    border: 1px solid var(--gray-200);
+  }
+  .metric .m-label { font-size: 11px; color: var(--gray-400); margin-bottom: 4px; }
+  .metric .m-value { font-size: 22px; font-weight: 600; }
+  .metric .m-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+  .metric.green .m-value { color: var(--green-dark); }
+  .metric.red .m-value { color: var(--red); }
+  .metric.amber .m-value { color: var(--amber); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td { padding: 7px 4px; border-bottom: 1px solid var(--gray-100); }
+  tr:last-child td { border-bottom: none; }
+  td:last-child { text-align: right; font-weight: 500; }
+  .td-label { color: var(--gray-600); }
+  .td-green { color: var(--green-dark); }
+  .td-red { color: var(--red); }
+  .td-amber { color: var(--amber); }
+  .td-muted { color: var(--gray-400); text-decoration: line-through; }
+  .tr-total td { border-top: 2px solid var(--gray-200); font-weight: 600; padding-top: 10px; border-bottom: none; }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  .badge-green { background: var(--green-light); color: var(--green-dark); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+
+  /* SECTION HEADER */
+  .section-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 20px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* FORMS */
+  .form-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  input[type="text"], input[type="number"], select {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: var(--font);
+    background: var(--white);
+    color: var(--gray-900);
+    outline: none;
+    transition: border 0.15s;
+  }
+  input[type="text"]:focus, input[type="number"]:focus, select:focus {
+    border-color: var(--green);
+  }
+  input[type="text"] { flex: 1; }
+  input[type="number"] { width: 90px; }
+
+  button {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-900);
+    font-size: 13px;
+    font-family: var(--font);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  button:hover { background: var(--gray-100); }
+  button.btn-primary {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green);
+  }
+  button.btn-primary:hover { background: var(--green-dark); }
+  button.btn-danger {
+    background: transparent;
+    color: var(--red);
+    border-color: var(--red-light);
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  button.btn-danger:hover { background: var(--red-light); }
+  button.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  /* VISUAL CALENDAR */
+  .vcal-wrap { margin-bottom: 28px; }
+  .vcal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .vcal-month-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+  .vcal-summary { font-size: 12px; color: var(--gray-600); text-align: right; line-height: 1.6; }
+  .vcal-dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+  .vcal-dow-label {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    padding: 4px 0;
+  }
+  .vcal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .vcal-cell {
+    min-height: 72px;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+    padding: 5px 5px 4px;
+    position: relative;
+    cursor: default;
+    transition: border-color 0.15s;
+    overflow: hidden;
+  }
+  .vcal-cell.has-events { cursor: pointer; }
+  .vcal-cell.has-events:hover { border-color: var(--green); }
+  .vcal-cell.empty { background: var(--gray-50); border-color: var(--gray-100); min-height: 72px; }
+  .vcal-cell.today { border-color: var(--green); border-width: 2px; }
+  .vcal-day-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-400);
+    margin-bottom: 3px;
+  }
+  .vcal-cell.today .vcal-day-num {
+    color: var(--white);
+    background: var(--green);
+    border-radius: 10px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .vcal-dot {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    border-radius: 3px;
+    padding: 1px 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vcal-dot.income { background: #E1F5EE; color: #0F6E56; }
+  .vcal-dot.expense { background: #FDEDEC; color: #A32D2D; }
+  .vcal-dot.neutral { background: #FEF5E7; color: #854F0B; }
+  .vcal-dot-more { font-size: 9px; color: var(--gray-400); padding: 1px 3px; }
+
+  /* RUNNING BALANCE BAR */
+  .vcal-balance-section { margin-bottom: 20px; }
+  .vcal-balance-title { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .vcal-balance-track {
+    display: flex;
+    gap: 2px;
+    height: 36px;
+    align-items: flex-end;
+    margin-bottom: 4px;
+  }
+  .vcal-balance-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    min-height: 4px;
+    transition: height 0.3s;
+  }
+  .vcal-balance-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--gray-400);
+  }
+
+  /* DAY DETAIL PANEL */
+  .day-detail-header {
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border: 1px solid var(--gray-200);
+  }
+  .day-detail-date { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .day-event-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--gray-100);
+    font-size: 13px;
+  }
+  .day-event-row:last-child { border-bottom: none; }
+
+
+  /* SCENARIO TOGGLE */
+  .scenario-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .scenario-toggle button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+  }
+  .scenario-toggle button.active {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green-dark);
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 10px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-bottom: 4px;
+  }
+  .progress-track {
+    height: 8px;
+    background: var(--gray-100);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s;
+  }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--gray-900);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* NOTE */
+  .note {
+    font-size: 12px;
+    color: var(--gray-600);
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-left: 3px solid var(--green);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--gray-200); margin: 16px 0; }
+
+  /* EDIT INLINE */
+  .editable-row { cursor: pointer; }
+  .editable-row:hover td { background: var(--gray-50); }
+  .edit-input {
+    width: 80px;
+    padding: 3px 6px;
+    font-size: 13px;
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    text-align: right;
+  }
+
+  .month-row { display: flex; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 0.5px solid var(--gray-100); }
+  .month-row:last-child { border-bottom: none; }
+
+  /* SLIDE PANEL */
+  .panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 200;
+  }
+  .panel-overlay.open { display: block; }
+  .slide-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 100vw);
+    background: var(--white);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .slide-panel.open { transform: translateX(0); }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--white);
+    flex-shrink: 0;
+  }
+  .panel-back {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--green);
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .panel-title { font-size: 16px; font-weight: 600; flex: 1; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+
+  /* BUDGET TRACKER CARDS */
+  .budget-cat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .budget-cat-card:hover { border-color: var(--green); box-shadow: 0 2px 8px rgba(29,158,117,0.1); }
+  .budget-cat-card:active { background: var(--gray-50); }
+  .bcat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .bcat-name { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .bcat-amounts { text-align: right; }
+  .bcat-spent { font-size: 16px; font-weight: 600; }
+  .bcat-budget { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+  .bcat-remaining { font-size: 12px; font-weight: 500; margin-top: 2px; }
+  .bcat-bar-track { height: 6px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
+  .bcat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .bcat-tap-hint { font-size: 11px; color: var(--gray-400); margin-top: 6px; }
+
+
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .nav-title { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-title">🏠 Budget</span>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showPage('budget')">Budget</button>
+    <button class="nav-tab" onclick="showPage('subscriptions')">Subscriptions</button>
+    <button class="nav-tab" onclick="showPage('calendar')">Calendar</button>
+    <button class="nav-tab" onclick="showPage('forecast')">Forecast</button>
+    <button class="nav-tab" onclick="showPage('transactions')">Transactions</button>
+    <button class="nav-tab" onclick="showPage('amex')">Amex Payoff</button>
+    <button class="nav-tab" onclick="showPage('deborah')">Deborah</button>
+    <button class="nav-tab" onclick="showPage('rick')">Rick</button>
+    <button class="nav-tab" onclick="showPage('groceries')">Groceries</button>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<!-- SLIDE PANEL -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+<div class="slide-panel" id="slide-panel">
+  <div class="panel-header">
+    <button class="panel-back" onclick="closePanel()">←</button>
+    <div class="panel-title" id="panel-title">Category</div>
+    <button class="btn-sm btn-primary" onclick="showPanelAddForm()">+ Add</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="metric-grid" id="dash-metrics"></div>
+  <div id="dash-spending-bars"></div>
+  <div class="card">
+    <div class="card-title">Quick actions</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="showPage('transactions')">+ Add transaction</button>
+      <button onclick="showPage('subscriptions')">Manage subscriptions</button>
+      <button onclick="showPage('forecast')">View forecast</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Recently cancelled — savings recovered</div>
+    <table id="dash-cancelled"></table>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div id="page-budget" class="page">
+  <div class="note">Tap any category to log expenses and see your spending detail.</div>
+  <div class="metric-grid" id="budget-overview-metrics"></div>
+  <div id="budget-categories"></div>
+</div>
+
+<!-- SUBSCRIPTIONS -->
+<div id="page-subscriptions" class="page">
+  <div class="card">
+    <div class="card-title">Add subscription</div>
+    <div class="form-row">
+      <input type="text" id="sub-name" placeholder="Name (e.g. Netflix)">
+      <input type="number" id="sub-amount" placeholder="$/mo" step="0.01">
+    </div>
+    <div class="form-row">
+      <select id="sub-account">
+        <option value="Amex">Amex</option>
+        <option value="RBC">RBC</option>
+        <option value="PayPal/RBC">PayPal → RBC</option>
+      </select>
+      <select id="sub-status">
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="ending">Ending soon</option>
+      </select>
+      <input type="text" id="sub-note" placeholder="Note (optional)" style="flex:1;">
+    </div>
+    <button class="btn-primary" onclick="addSubscription()">Add subscription</button>
+  </div>
+  <div id="subscriptions-list"></div>
+</div>
+
+<!-- CALENDAR -->
+<div id="page-calendar" class="page">
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <button id="cal-btn-jun" class="btn-primary btn-sm" onclick="setCalMonth('Jun')">June 2026</button>
+    <button id="cal-btn-jul" class="btn-sm" onclick="setCalMonth('Jul')">July 2026</button>
+  </div>
+  <div id="calendar-content"></div>
+</div>
+
+<!-- FORECAST -->
+<div id="page-forecast" class="page">
+  <div class="scenario-toggle">
+    <button class="active" id="btn-with-landmark" onclick="setScenario('with')">With Landmark</button>
+    <button id="btn-without-landmark" onclick="setScenario('without')">Without Landmark</button>
+  </div>
+  <div id="forecast-content"></div>
+</div>
+
+<!-- GROCERIES -->
+<div id="page-groceries" class="page">
+
+  <div style="background:#EAF3DE;border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid #C0DD97;">
+    <div style="font-size:13px;color:#3B6D11;font-weight:600;margin-bottom:4px;">Weekly Grocery Budget</div>
+    <div style="font-size:28px;font-weight:700;color:#3B6D11;" id="groc-weekly-budget">$293</div>
+    <div style="font-size:12px;color:#3B6D11;margin-top:2px;">per week — $1,270 monthly ÷ 4.33 weeks</div>
+  </div>
+
+  <div class="metric-grid" id="groc-metrics"></div>
+
+  <div class="card">
+    <div class="card-title">Monthly grocery budget breakdown</div>
+    <table class="row-table">
+      <tr><td>Weekly shop ×4 <span style="font-size:11px;color:var(--gray-400);">(Costco, Walmart, Save On)</span></td><td>$220/wk → $880</td></tr>
+      <tr><td>Instacart top-ups <span style="font-size:11px;color:var(--gray-400);">(as needed)</span></td><td>~$150</td></tr>
+      <tr><td>Pet food <span style="font-size:11px;color:var(--gray-400);">(2 dogs, 1 cat)</span></td><td>~$70</td></tr>
+      <tr><td>Supplements <span style="font-size:11px;color:var(--gray-400);">(Costco)</span></td><td>~$75</td></tr>
+      <tr><td>Specialty stores <span style="font-size:11px;color:var(--gray-400);">(T&T, Bulk Barn, Urban Farm)</span></td><td>~$50</td></tr>
+      <tr><td>Amazon household & cat food</td><td>~$65</td></tr>
+      <tr class="tr-total"><td>Total monthly</td><td>$1,270</td></tr>
+    </table>
+  </div>
+
+  <div class="section-header">
+    Weekly shops
+    <button class="btn-sm btn-primary" onclick="addGroceryWeek()">+ Add this week's shop</button>
+  </div>
+
+  <div id="groc-add-form" style="display:none;" class="card">
+    <div class="card-title">Log this week's shop</div>
+    <div class="form-row">
+      <input type="text" id="groc-date" placeholder="Date (e.g. Jun 15)">
+      <input type="text" id="groc-store" placeholder="Store (e.g. Costco)">
+      <input type="number" id="groc-amount" placeholder="Total $" step="0.01">
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="font-size:12px;color:var(--gray-600);margin-bottom:6px;">What did you buy? (check all that apply)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-produce"> Fresh produce</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-meat"> Meat & protein</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-dairy"> Dairy & eggs</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-pantry"> Pantry & bulk</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-household"> Household supplies</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-pet"> Pet food</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-supplements"> Supplements</label>
+        <label style="font-size:13px;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="groc-cat-treats"> Treats & snacks</label>
+      </div>
+    </div>
+    <input type="text" id="groc-notes" placeholder="Notes (optional)" style="width:100%;margin-bottom:8px;">
+    <div style="display:flex;gap:8px;">
+      <button class="btn-primary" onclick="saveGroceryWeek()">Save shop</button>
+      <button onclick="document.getElementById('groc-add-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+
+  <div id="groc-weeks-list"></div>
+
+  <div class="section-header" style="margin-top:20px;">Non-weekly purchases this month</div>
+  <div class="card">
+    <div class="card-title">Log Instacart, pet food, supplements, Amazon etc.</div>
+    <div class="form-row">
+      <input type="text" id="groc-extra-desc" placeholder="What was it?">
+      <input type="number" id="groc-extra-amount" placeholder="$" step="0.01" style="width:80px;">
+      <select id="groc-extra-cat">
+        <option>Instacart delivery</option>
+        <option>Pet food</option>
+        <option>Supplements</option>
+        <option>Specialty grocery</option>
+        <option>Amazon household</option>
+        <option>Other</option>
+      </select>
+      <button class="btn-primary" onclick="addGroceryExtra()">Add</button>
+    </div>
+    <div id="groc-extras-list" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card" id="groc-monthly-summary">
+    <div class="card-title">This month at a glance</div>
+    <div id="groc-summary-content"></div>
+  </div>
+
+</div>
+<div id="page-rick" class="page">
+
+  <div style="background:#E6F1FB;border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid #B5D4F4;">
+    <div style="font-size:13px;color:#185FA5;font-weight:600;margin-bottom:4px;">Rick's Account — Monthly Overview</div>
+    <div style="font-size:28px;font-weight:700;color:#185FA5;" id="rick-surplus-display">$503</div>
+    <div style="font-size:12px;color:#185FA5;margin-top:2px;">monthly surplus after all bills & savings</div>
+  </div>
+
+  <div class="metric-grid" id="rick-metrics"></div>
+
+  <div class="card">
+    <div class="card-title">Rick's income</div>
+    <table class="row-table">
+      <tr><td>Reimer Hardwood payroll ×2</td><td style="color:var(--green);">+$5,180</td></tr>
+      <tr><td>CPP</td><td style="color:var(--green);">+$989</td></tr>
+      <tr class="tr-total"><td>Total monthly income</td><td style="color:var(--green);">+$6,169</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rick's fixed responsibilities — household</div>
+    <table class="row-table">
+      <tr><td>Mortgage — main payment</td><td style="color:var(--red);">−$1,989</td></tr>
+      <tr><td>Mortgage — second payment</td><td style="color:var(--red);">−$866</td></tr>
+      <tr><td>Amex — recurring charges (Shaw, Netflix, Spotify, ChatGPT)</td><td style="color:var(--red);">−$202</td></tr>
+      <tr><td>Amex — payoff contribution <span class="badge badge-amber">until Dec 2026</span></td><td style="color:var(--red);">−$500</td></tr>
+      <tr class="tr-total"><td>Total household bills</td><td style="color:var(--red);">−$3,557</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Rick's personal expenses</div>
+    <table class="row-table" id="rick-personal-table">
+      <tr class="editable-row" onclick="editRickItem('icbc_commuter')"><td>ICBC — commuter vehicle</td><td id="rick-icbc_commuter">−$104</td></tr>
+      <tr class="editable-row" onclick="editRickItem('icbc_family')"><td>ICBC — family car</td><td id="rick-icbc_family">−$144</td></tr>
+      <tr class="editable-row" onclick="editRickItem('icbc_project')"><td>ICBC — project car</td><td id="rick-icbc_project">−$151</td></tr>
+      <tr class="editable-row" onclick="editRickItem('fuel_commute')"><td>Fuel — commute</td><td id="rick-fuel_commute">−$325</td></tr>
+      <tr class="editable-row" onclick="editRickItem('fuel_personal')"><td>Fuel — personal</td><td id="rick-fuel_personal">−$125</td></tr>
+      <tr class="editable-row" onclick="editRickItem('maintenance')"><td>Vehicle maintenance & repairs</td><td id="rick-maintenance">−$150</td></tr>
+      <tr class="editable-row" onclick="editRickItem('lunch')"><td>Rick & Deborah Saturday lunch</td><td id="rick-lunch">−$60</td></tr>
+      <tr class="editable-row" onclick="editRickItem('personal')"><td>Occasional personal purchases</td><td id="rick-personal">−$50</td></tr>
+      <tr class="editable-row" onclick="editRickItem('savings')"><td>Emergency savings <span class="badge badge-green">goal</span></td><td id="rick-savings">−$1,000</td></tr>
+      <tr class="tr-total"><td>Total personal</td><td id="rick-personal-total">−$2,109</td></tr>
+    </table>
+    <div style="font-size:11px;color:var(--gray-400);margin-top:6px;">Tap any line to edit the amount.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Monthly summary</div>
+    <table class="row-table">
+      <tr><td>Total income</td><td style="color:var(--green);">+$6,169</td></tr>
+      <tr><td>Household bills</td><td style="color:var(--red);">−$3,557</td></tr>
+      <tr><td>Personal expenses</td><td style="color:var(--red);" id="rick-summary-personal">−$2,109</td></tr>
+      <tr class="tr-total"><td>Monthly surplus</td><td style="color:var(--green);" id="rick-summary-surplus">~$503</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">After Amex is paid off — December 2026</div>
+    <table class="row-table">
+      <tr><td>Amex payoff contribution freed up</td><td style="color:var(--green);">+$500</td></tr>
+      <tr><td>Revised monthly surplus</td><td style="color:var(--green);">~$1,003</td></tr>
+      <tr><td>Recommended — add to savings</td><td>+$500 extra/mo</td></tr>
+      <tr><td>Or — extra mortgage payment</td><td>reduce principal faster</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="background:#FAECE7;border-color:#F0997B;">
+    <div class="card-title" style="color:#993C1D;">If Landmark ends</div>
+    <table class="row-table">
+      <tr><td>Rick's surplus available to help Colette</td><td style="color:#3B6D11;">~$503/mo</td></tr>
+      <tr><td>Could temporarily pause savings contribution</td><td style="color:#3B6D11;">+$1,000/mo</td></tr>
+      <tr><td>Maximum Rick can contribute</td><td style="color:#3B6D11;">~$1,503/mo</td></tr>
+    </table>
+    <div style="font-size:12px;color:#712B13;margin-top:8px;">Combined with EI and spending cuts, the household remains stable even without Landmark income.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Log Rick's spending this month</div>
+    <div class="form-row">
+      <input type="text" id="rick-tx-desc" placeholder="Description">
+      <input type="number" id="rick-tx-amount" placeholder="$" step="0.01" style="width:80px;">
+    </div>
+    <div class="form-row">
+      <select id="rick-tx-cat">
+        <option>Fuel</option>
+        <option>Vehicle maintenance</option>
+        <option>Groceries</option>
+        <option>Dining out</option>
+        <option>Personal purchase</option>
+        <option>Tools & supplies</option>
+        <option>Other</option>
+      </select>
+      <button class="btn-primary" onclick="addRickTransaction()">Add</button>
+    </div>
+    <div id="rick-tx-list" style="margin-top:10px;"></div>
+  </div>
+
+</div>
+<div id="page-deborah" class="page">
+
+  <!-- Fireworks canvas -->
+  <canvas id="deb-fireworks" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:500;display:none;"></canvas>
+
+  <!-- Hero banner — changes based on status -->
+  <div id="deb-hero" style="border-radius:var(--radius);padding:20px 16px;margin-bottom:14px;text-align:center;transition:background 0.5s;"></div>
+
+  <!-- Badge -->
+  <div id="deb-badge" style="text-align:center;margin-bottom:14px;"></div>
+
+  <div class="metric-grid" id="deb-metrics"></div>
+
+  <!-- Spending progress — fun version -->
+  <div class="card" id="deb-progress-card">
+    <div class="card-title">💸 Deborah's $230 this month</div>
+    <div id="deb-progress-bar-wrap"></div>
+    <div id="deb-vibe-message" style="margin-top:10px;font-size:13px;line-height:1.6;"></div>
+  </div>
+
+  <!-- Add spending -->
+  <div class="card">
+    <div class="card-title">➕ Log something you spent</div>
+    <div class="form-row">
+      <input type="text" id="deb-tx-desc" placeholder="What was it? (e.g. craft supplies)">
+      <input type="number" id="deb-tx-amount" placeholder="$" step="0.01" style="width:80px;">
+    </div>
+    <div class="form-row">
+      <select id="deb-tx-cat">
+        <option>Hobbies & crafts</option>
+        <option>Clothing (special)</option>
+        <option>Gifts</option>
+        <option>Food & snacks</option>
+        <option>Entertainment</option>
+        <option>Personal care</option>
+        <option>Sports & activities</option>
+        <option>Other</option>
+      </select>
+      <button class="btn-primary" onclick="addDebTransaction()">Add</button>
+    </div>
+    <div id="deb-spending-list" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Savings goals — fun version -->
+  <div class="card">
+    <div class="card-title">🌟 Savings goals</div>
+    <div style="font-size:12px;color:var(--gray-600);margin-bottom:10px;">Pick something you really want and work toward it — even $10 at a time!</div>
+    <div class="form-row">
+      <input type="text" id="deb-goal-name" placeholder="What are you saving for?">
+      <input type="number" id="deb-goal-target" placeholder="How much? $" step="1" style="width:110px;">
+      <button class="btn-primary" onclick="addDebGoal()">Add goal ⭐</button>
+    </div>
+    <div id="deb-goals-list" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- How money works -->
+  <div class="card">
+    <div class="card-title">📋 How your money works</div>
+    <table class="row-table">
+      <tr><td>Your monthly income</td><td style="color:var(--green);">+$1,300</td></tr>
+      <tr><td>Room & board (to Colette)</td><td style="color:var(--red);">−$700</td></tr>
+      <tr><td>Phone (to Colette)</td><td style="color:var(--red);">−$70</td></tr>
+      <tr><td>Health reserve (Colette holds it for you)</td><td style="color:var(--red);">−$300</td></tr>
+      <tr class="tr-total"><td>Your spending money</td><td style="color:var(--green);">+$230 🎉</td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--gray-600);">Colette keeps $300/month safe for you in case of medical or dental stuff. It's YOUR money — she's just holding it. 🏥</div>
+  </div>
+
+  <!-- Health reserve -->
+  <div class="card">
+    <div class="card-title">🏥 Your health reserve</div>
+    <div id="deb-reserve"></div>
+    <div class="form-row" style="margin-top:10px;">
+      <input type="text" id="deb-med-desc" placeholder="What was the expense?">
+      <input type="number" id="deb-med-amount" placeholder="$" step="0.01" style="width:80px;">
+      <button onclick="addDebMedical()">Log it</button>
+    </div>
+    <div id="deb-medical-list" style="margin-top:10px;"></div>
+    <button class="btn-sm" style="margin-top:8px;" onclick="addDebReserveMonth()">+ Add this month's $300</button>
+  </div>
+
+  <!-- Money tip — fun version -->
+  <div id="deb-tip-card" class="card" style="border:2px solid #F4C430;">
+    <div style="font-size:15px;font-weight:700;margin-bottom:6px;">💡 Money wisdom of the month</div>
+    <div id="deb-tip" style="font-size:13px;line-height:1.7;"></div>
+  </div>
+
+</div>
+<div id="page-amex" class="page">
+  <div class="metric-grid" id="amex-metrics"></div>
+
+  <div class="card">
+    <div class="card-title">Adjust your monthly payment</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <span style="font-size:13px;color:var(--gray-600);min-width:80px;">Payment</span>
+      <input type="range" id="amex-slider" min="123" max="5518" step="1" value="1900"
+        oninput="updateAmex(this.value)" style="flex:1;">
+      <span style="font-size:16px;font-weight:600;min-width:70px;text-align:right;" id="amex-slider-val">$1,900</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-sm" onclick="setAmexPayment(123)">Minimum $123</button>
+      <button class="btn-sm" onclick="setAmexPayment(1900)">Recommended $1,900</button>
+      <button class="btn-sm" onclick="setAmexPayment(2800)">Aggressive $2,800</button>
+      <button class="btn-sm btn-primary" onclick="setAmexPayment(5518)">Pay in full now</button>
+    </div>
+  </div>
+
+  <div id="amex-schedule"></div>
+  <div id="amex-impact"></div>
+  <div id="amex-after"></div>
+</div>
+<div id="page-transactions" class="page">
+  <div class="card">
+    <div class="card-title">Log a transaction</div>
+    <div class="form-row">
+      <input type="text" id="tx-desc" placeholder="Description">
+      <input type="number" id="tx-amount" placeholder="Amount" step="0.01">
+    </div>
+    <div class="form-row">
+      <select id="tx-category">
+        <option>Housing & utilities</option>
+        <option>Communications</option>
+        <option>Insurance</option>
+        <option>Groceries & household</option>
+        <option>Transportation</option>
+        <option>Medical & pharmacy</option>
+        <option>Personal care & beauty</option>
+        <option>Pet care</option>
+        <option>Subscriptions</option>
+        <option>Dining out</option>
+        <option>Household services</option>
+        <option>Discretionary</option>
+        <option>Income</option>
+        <option>Other</option>
+      </select>
+      <select id="tx-type">
+        <option value="expense">Expense</option>
+        <option value="income">Income</option>
+      </select>
+      <input type="text" id="tx-date" placeholder="Date (Jun 15)">
+    </div>
+    <button class="btn-primary" onclick="addTransaction()">Save transaction</button>
+  </div>
+  <div id="transactions-list"></div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+const DEFAULT_STATE = {
+  income: {
+    colette_landmark: 5235,
+    colette_cpp: 1346,
+    colette_oas: 323,
+    rick_payroll: 5180,
+    rick_cpp: 989,
+    deborah_net: 670
+  },
+  budget: [
+    { id: 'housing', name: 'Housing & utilities', amount: 3920, items: [
+      { name: 'Mortgage — main (due 22nd)', amount: 1989 },
+      { name: 'Mortgage — second (due 15th)', amount: 866 },
+      { name: 'BC Hydro (due 24th)', amount: 129 },
+      { name: 'FortisBC (due 28th-29th)', amount: 113 },
+      { name: 'Shaw Internet (via Amex)', amount: 129 },
+      { name: 'Property Tax — due 1st ($0 in Jul & Aug)', amount: 433 },
+      { name: 'Cleaning service — weekly (due 15th)', amount: 630 }
+    ]},
+    { id: 'comms', name: 'Communications', amount: 320, items: [
+      { name: 'Bell Mobility (net of Deborah $70)', amount: 320 }
+    ]},
+    { id: 'insurance', name: 'Insurance', amount: 910, items: [
+      { name: 'Belair Home Insurance', amount: 350 },
+      { name: 'Combined Insurance', amount: 190 },
+      { name: 'ICBC — Colette Smart Car', amount: 122 },
+      { name: 'ICBC — Rick commuter', amount: 104 },
+      { name: 'ICBC — Family car', amount: 144 },
+      { name: 'ICBC — Project car', amount: 151 }
+    ]},
+    { id: 'groceries', name: 'Groceries & household', amount: 1270, items: [
+      { name: 'Costco — groceries', amount: 555 },
+      { name: 'Costco — pet food', amount: 70 },
+      { name: 'Costco — supplements', amount: 75 },
+      { name: 'Walmart / Save On / Superstore', amount: 225 },
+      { name: 'Instacart deliveries', amount: 150 },
+      { name: 'Specialty grocery (T&T, Bulk Barn, etc.)', amount: 50 },
+      { name: 'Dollarama / London Drugs / household', amount: 80 },
+      { name: 'Amazon — household & cat food', amount: 65 }
+    ]},
+    { id: 'transport', name: 'Transportation', amount: 725, items: [
+      { name: 'Rick fuel — commute', amount: 325 },
+      { name: 'Rick fuel — personal', amount: 125 },
+      { name: 'Colette fuel — Smart Car', amount: 100 },
+      { name: 'Vehicle maintenance & repairs', amount: 150 },
+      { name: 'Parking (occasional)', amount: 25 }
+    ]},
+    { id: 'medical', name: 'Medical & pharmacy', amount: 552, items: [
+      { name: 'MedExpress Digi (prescriptions)', amount: 432 },
+      { name: 'Shoppers Drug Mart', amount: 60 },
+      { name: 'Therapeutic treatments (occasional)', amount: 35 },
+      { name: 'MyBody supplement app', amount: 25 }
+    ]},
+    { id: 'personalcare', name: 'Personal care & beauty', amount: 135, items: [
+      { name: "Randy's Salon — haircuts", amount: 60 },
+      { name: "Randy's Salon — threading/waxing", amount: 30 },
+      { name: "Randy's Salon — Deborah gift (averaged)", amount: 25 },
+      { name: 'Sephora — cosmetics & toiletries', amount: 20 }
+    ]},
+    { id: 'pets', name: 'Pet care', amount: 130, items: [
+      { name: 'Pet Valu — supplies (2 dogs, 1 cat)', amount: 60 },
+      { name: 'Amazon — cat food', amount: 40 },
+      { name: 'Vet & other (occasional)', amount: 30 }
+    ]},
+    { id: 'subscriptions', name: 'Subscriptions', amount: 390, items: [
+      { name: 'Netflix (Amex)', amount: 27 },
+      { name: 'Spotify (Amex)', amount: 14 },
+      { name: 'Hallmark+ (RBC)', amount: 11 },
+      { name: 'Amazon Prime (RBC)', amount: 24 },
+      { name: 'Amazon Channels (RBC)', amount: 14 },
+      { name: 'Peloton — suspended (Amex)', amount: 67 },
+      { name: 'Claude — Apple bundle (RBC)', amount: 28 },
+      { name: 'ChatGPT Plus (Amex)', amount: 32 },
+      { name: 'Adobe (PayPal→RBC)', amount: 29 },
+      { name: 'Calendly (RBC)', amount: 17 },
+      { name: 'Wondershare (annual ÷12)', amount: 8 },
+      { name: 'Savings — Mutual Funds', amount: 25 },
+      { name: 'Savings — Find & Save', amount: 75 }
+    ]},
+    { id: 'temporary', name: 'Temporary obligations', amount: 187, items: [
+      { name: "Affirm — Jonathan's gift (~4 payments left)", amount: 172 },
+      { name: 'Affirm — Apple Watches (almost done)', amount: 15 }
+    ]},
+    { id: 'dining', name: 'Dining out', amount: 350, items: [
+      { name: 'Weekly family dinner (Paulo\'s, Nando\'s etc.)', amount: 220 },
+      { name: 'Rick & Deborah Saturday lunch', amount: 60 },
+      { name: 'Occasional lunches & snacks', amount: 70 }
+    ]},
+    { id: 'cleaning', name: 'Household services', amount: 630, items: [
+      { name: 'Just Call Grace — weekly cleaning', amount: 630 }
+    ]},
+    { id: 'discretionary', name: 'Discretionary & occasional', amount: 300, items: [
+      { name: 'Amazon household purchases', amount: 100 },
+      { name: 'Crafts — BaaadRabbit, Michaels', amount: 75 },
+      { name: 'Clothing & footwear', amount: 75 },
+      { name: 'Home décor & furnishings', amount: 30 },
+      { name: 'Gifts (occasional)', amount: 20 }
+    ]}
+  ],
+  subscriptions: [
+    { id: 1, name: 'Netflix', amount: 27, account: 'Amex', status: 'active', note: '' },
+    { id: 2, name: 'Spotify', amount: 14, account: 'Amex', status: 'active', note: '' },
+    { id: 3, name: 'Hallmark+', amount: 11, account: 'RBC', status: 'active', note: 'Moved from Amex' },
+    { id: 4, name: 'Amazon Prime', amount: 24, account: 'RBC', status: 'active', note: '' },
+    { id: 5, name: 'Amazon Channels', amount: 14, account: 'RBC', status: 'active', note: '' },
+    { id: 6, name: 'Peloton', amount: 67, account: 'Amex', status: 'suspended', note: 'Suspended 2 months — cancel if Landmark ends' },
+    { id: 7, name: 'Claude (Apple bundle)', amount: 28, account: 'RBC', status: 'active', note: 'Direct Anthropic charges are usage overages' },
+    { id: 8, name: 'ChatGPT Plus', amount: 32, account: 'Amex', status: 'active', note: '' },
+    { id: 9, name: 'Adobe', amount: 29, account: 'PayPal/RBC', status: 'active', note: 'Moved to PayPal→RBC' },
+    { id: 10, name: 'Calendly', amount: 17, account: 'RBC', status: 'active', note: 'Review if Landmark ends — work related' },
+    { id: 11, name: 'Wondershare', amount: 8, account: 'RBC', status: 'active', note: 'Annual — expires Dec 2026' },
+    { id: 12, name: 'Shaw Internet', amount: 129, account: 'Amex', status: 'active', note: 'Moving to RBC when ready' },
+    { id: 13, name: 'Meta / Facebook', amount: 41, account: 'PayPal/RBC', status: 'cancelled', note: 'Cancelled Jun 11-12, 2026' },
+    { id: 14, name: 'DoorDash', amount: 10, account: 'RBC', status: 'cancelled', note: 'Cancelled' },
+    { id: 15, name: 'Jumpspeak', amount: 7, account: 'Amex', status: 'cancelled', note: 'Annual — cancelling' },
+    { id: 16, name: 'HeartBit / NPRD', amount: 42, account: 'RBC', status: 'cancelled', note: 'Cancelled April 2026' },
+    { id: 17, name: 'UseAI / Yep AI', amount: 65, account: 'RBC', status: 'cancelled', note: 'Cancelled — expires Jun 26, 2026' },
+    { id: 18, name: 'Angel Care Dental', amount: 867, account: 'Amex', status: 'cancelled', note: 'Payment plan complete — paid off' },
+    { id: 19, name: 'VSA CopyMind', amount: 56, account: 'RBC', status: 'cancelled', note: 'Cancelled after March 2026' },
+    { id: 20, name: '23andMe', amount: 99, account: 'Amex', status: 'cancelled', note: 'Cancelled' },
+    { id: 21, name: 'MFluent App', amount: 5, account: 'Amex', status: 'cancelled', note: 'Annual language learning — cancelled' },
+    { id: 22, name: 'Ice maker payments', amount: 70, account: 'RBC', status: 'cancelled', note: 'Fully paid off March 2026' }
+  ],
+  transactions: [],
+  calendarEvents: [
+
+    // ── JUNE 2026 ─────────────────────────────────────────────────────────────
+    // Jun Saturdays (cleaning): 6, 13, 20, 27
+    // Property tax hits every month EXCEPT Jul & Aug
+    { date: 'Jun 1', desc: 'Property Tax — City of Richmond', amount: -433, type: 'expense', account: 'RBC', note: 'Skips Jul & Aug' },
+    { date: 'Jun 3', desc: 'Combined Insurance', amount: -190, type: 'expense', account: 'RBC' },
+    { date: 'Jun 5', desc: 'ICBC — Rick commuter', amount: -104, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jun 5', desc: 'ICBC — Family car', amount: -144, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jun 5', desc: 'ICBC — Project car', amount: -151, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jun 5', desc: 'ICBC — Colette Smart Car', amount: -122, type: 'expense', account: 'RBC' },
+    { date: 'Jun 5', desc: 'Adobe (PayPal→RBC)', amount: -29.11, type: 'expense', account: 'RBC' },
+    { date: 'Jun 6', desc: 'Belair Home Insurance', amount: -350, type: 'expense', account: 'RBC' },
+    { date: 'Jun 6', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jun 7', desc: 'Amazon Prime + Channels', amount: -37, type: 'expense', account: 'RBC' },
+    { date: 'Jun 11', desc: 'Amex payment — payoff', amount: -1000, type: 'expense', account: 'Amex', note: 'Rick $500 + Colette $500' },
+    { date: 'Jun 13', desc: 'Landmark payroll ×1', amount: 2618, type: 'income', account: 'RBC' },
+    { date: 'Jun 13', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jun 14', desc: 'Bitepal expires', amount: 0, type: 'neutral', account: '', note: 'Deborah reimburses' },
+    { date: 'Jun 15', desc: 'Rick payroll ×1', amount: 2431, type: 'income', account: 'Rick RBC' },
+    { date: 'Jun 15', desc: 'Mortgage — second payment', amount: -866, type: 'expense', account: 'RBC' },
+    { date: 'Jun 18', desc: 'Hallmark+', amount: -11.20, type: 'expense', account: 'RBC' },
+    { date: 'Jun 19', desc: 'Bell Mobility', amount: -390, type: 'expense', account: 'RBC' },
+    { date: 'Jun 20', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jun 20', desc: 'Deborah room & board', amount: 770, type: 'income', account: 'e-transfer', note: 'Recommended transfer day' },
+    { date: 'Jun 22', desc: 'Colette CPP', amount: 1346, type: 'income', account: 'RBC' },
+    { date: 'Jun 22', desc: 'Old Age Security', amount: 323, type: 'income', account: 'RBC' },
+    { date: 'Jun 22', desc: 'Rick CPP', amount: 989, type: 'income', account: 'Rick RBC' },
+    { date: 'Jun 22', desc: 'Mortgage — main payment', amount: -1989, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jun 24', desc: 'BC Hydro', amount: -129, type: 'expense', account: 'RBC' },
+    { date: 'Jun 24', desc: 'Calendly', amount: -17, type: 'expense', account: 'RBC' },
+    { date: 'Jun 25', desc: 'UseAI expires — confirm no charge', amount: 0, type: 'neutral', account: '' },
+    { date: 'Jun 27', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jun 27', desc: 'Netflix', amount: -27, type: 'expense', account: 'Amex' },
+    { date: 'Jun 27', desc: 'Spotify', amount: -14.21, type: 'expense', account: 'Amex' },
+    { date: 'Jun 27', desc: 'ChatGPT Plus', amount: -32, type: 'expense', account: 'Amex' },
+    { date: 'Jun 28', desc: 'FortisBC', amount: -113, type: 'expense', account: 'RBC' },
+    { date: 'Jun 28', desc: 'MedExpress Digi', amount: -432, type: 'expense', account: 'RBC' },
+    { date: 'Jun 28', desc: 'Peloton — suspended', amount: 0, type: 'neutral', account: 'Amex', note: 'Monitor — cancel if needed' },
+    { date: 'Jun 30', desc: 'Landmark payroll ×2', amount: 2618, type: 'income', account: 'RBC' },
+    { date: 'Jun 30', desc: 'Rick payroll ×2', amount: 2431, type: 'income', account: 'Rick RBC' },
+    { date: 'Jun 30', desc: 'Rick — emergency savings', amount: -1000, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jun 30', desc: 'Find & Save (emergency fund)', amount: -75, type: 'expense', account: 'RBC' },
+    { date: 'Jun 30', desc: 'Mutual Funds deposit', amount: -25, type: 'expense', account: 'RBC' },
+
+    // ── JULY 2026 ─────────────────────────────────────────────────────────────
+    // Jul Saturdays (cleaning): 4, 11, 18, 25 — 4 payments this month
+    // Property tax SKIPS July and August
+    { date: 'Jul 3', desc: 'Combined Insurance', amount: -190, type: 'expense', account: 'RBC' },
+    { date: 'Jul 4', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jul 4', desc: 'Spotify', amount: -14.21, type: 'expense', account: 'Amex' },
+    { date: 'Jul 4', desc: 'ChatGPT Plus', amount: -32, type: 'expense', account: 'Amex' },
+    { date: 'Jul 5', desc: 'Adobe (PayPal→RBC)', amount: -29.11, type: 'expense', account: 'RBC' },
+    { date: 'Jul 5', desc: 'ICBC — Rick commuter', amount: -104, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 5', desc: 'ICBC — Family car', amount: -144, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 5', desc: 'ICBC — Project car', amount: -151, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 5', desc: 'ICBC — Colette Smart Car', amount: -122, type: 'expense', account: 'RBC' },
+    { date: 'Jul 6', desc: 'Belair Home Insurance', amount: -350, type: 'expense', account: 'RBC' },
+    { date: 'Jul 7', desc: 'Amazon Prime + Channels', amount: -37, type: 'expense', account: 'RBC' },
+    { date: 'Jul 11', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jul 11', desc: 'Amex payment — payoff', amount: -1000, type: 'expense', account: 'Amex', note: 'Rick $500 + Colette $500' },
+    { date: 'Jul 15', desc: 'Landmark payroll ×1', amount: 2618, type: 'income', account: 'RBC' },
+    { date: 'Jul 15', desc: 'Rick payroll ×1', amount: 2431, type: 'income', account: 'Rick RBC' },
+    { date: 'Jul 15', desc: 'Mortgage — second payment', amount: -866, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 15', desc: 'Affirm — FINAL payment', amount: -172, type: 'expense', account: 'RBC', note: '🎉 Last payment — done after this!' },
+    { date: 'Jul 18', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jul 18', desc: 'Hallmark+', amount: -11.20, type: 'expense', account: 'RBC' },
+    { date: 'Jul 19', desc: 'Bell Mobility', amount: -390, type: 'expense', account: 'RBC' },
+    { date: 'Jul 20', desc: 'Deborah room & board', amount: 770, type: 'income', account: 'e-transfer', note: 'Recommended transfer day' },
+    { date: 'Jul 22', desc: 'Colette CPP', amount: 1346, type: 'income', account: 'RBC' },
+    { date: 'Jul 22', desc: 'Old Age Security', amount: 323, type: 'income', account: 'RBC' },
+    { date: 'Jul 22', desc: 'Rick CPP', amount: 989, type: 'income', account: 'Rick RBC' },
+    { date: 'Jul 22', desc: 'Mortgage — main payment', amount: -1989, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 24', desc: 'BC Hydro', amount: -129, type: 'expense', account: 'RBC' },
+    { date: 'Jul 24', desc: 'Calendly', amount: -17, type: 'expense', account: 'RBC' },
+    { date: 'Jul 25', desc: 'Cleaning — Briany/Grace', amount: -157.50, type: 'expense', account: 'RBC' },
+    { date: 'Jul 27', desc: 'Netflix', amount: -27, type: 'expense', account: 'Amex' },
+    { date: 'Jul 28', desc: 'FortisBC', amount: -113, type: 'expense', account: 'RBC' },
+    { date: 'Jul 28', desc: 'MedExpress Digi', amount: -432, type: 'expense', account: 'RBC' },
+    { date: 'Jul 30', desc: 'Landmark payroll ×2', amount: 2618, type: 'income', account: 'RBC' },
+    { date: 'Jul 30', desc: 'Rick payroll ×2', amount: 2431, type: 'income', account: 'Rick RBC' },
+    { date: 'Jul 30', desc: 'Rick — emergency savings', amount: -1000, type: 'expense', account: 'Rick RBC' },
+    { date: 'Jul 30', desc: 'Find & Save (emergency fund)', amount: -75, type: 'expense', account: 'RBC' },
+    { date: 'Jul 30', desc: 'Mutual Funds deposit', amount: -25, type: 'expense', account: 'RBC' }
+
+  ]
+};
+
+let state = JSON.parse(localStorage.getItem('hb_state') || 'null') || DEFAULT_STATE;
+
+function save() {
+  localStorage.setItem('hb_state', JSON.stringify(state));
+  toast('Saved');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function fmt(n) {
+  return '$' + Math.abs(n).toLocaleString('en-CA', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  renderPage(id);
+}
+
+function renderPage(id) {
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'budget') renderBudget();
+  if (id === 'subscriptions') renderSubscriptions();
+  if (id === 'calendar') renderCalendar();
+  if (id === 'forecast') renderForecast();
+  if (id === 'amex') renderAmex();
+  if (id === 'deborah') renderDeborah();
+  if (id === 'rick') renderRick();
+  if (id === 'groceries') renderGroceries();
+}
+
+// ─── INCOME TOTALS ────────────────────────────────────────────────────────────
+function totalIncome(withLandmark = true) {
+  const inc = state.income;
+  let total = inc.colette_cpp + inc.colette_oas + inc.rick_payroll + inc.rick_cpp + inc.deborah_net;
+  if (withLandmark) total += inc.colette_landmark;
+  return total;
+}
+
+function totalBudget() {
+  return state.budget.reduce((sum, cat) => sum + cat.amount, 0);
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const income = totalIncome(true);
+  const spending = totalBudget();
+  const surplus = income - spending;
+  const incomeNoLandmark = totalIncome(false);
+  const gapNoLandmark = incomeNoLandmark - spending;
+
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric green">
+      <div class="m-label">Monthly income</div>
+      <div class="m-value">${fmt(income)}</div>
+      <div class="m-sub">with Landmark</div>
+    </div>
+    <div class="metric ${surplus >= 0 ? 'green' : 'red'}">
+      <div class="m-label">Monthly surplus</div>
+      <div class="m-value">${surplus >= 0 ? '+' : '−'}${fmt(surplus)}</div>
+      <div class="m-sub">income vs budget</div>
+    </div>
+    <div class="metric ${gapNoLandmark >= 0 ? 'green' : 'amber'}">
+      <div class="m-label">Without Landmark</div>
+      <div class="m-value">${gapNoLandmark >= 0 ? '+' : '−'}${fmt(Math.abs(gapNoLandmark))}</div>
+      <div class="m-sub">${gapNoLandmark >= 0 ? 'surplus' : 'gap'} without Landmark</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Monthly spending</div>
+      <div class="m-value">${fmt(spending)}</div>
+      <div class="m-sub">budgeted total</div>
+    </div>
+  `;
+
+  const maxAmt = Math.max(...state.budget.map(c => c.amount));
+  let bars = '<div class="card"><div class="card-title">Spending by category — budget vs actual</div>';
+  state.budget.forEach(cat => {
+    const spent = getCatSpent(cat.id);
+    const pct = Math.round((cat.amount / maxAmt) * 100);
+    const spentPct = Math.min(100, Math.round((spent / cat.amount) * 100));
+    const colors = ['#1D9E75','#2980B9','#E67E22','#8E44AD','#C0392B','#16A085','#D35400','#27AE60','#2C3E50','#7F8C8D','#E74C3C','#3498DB','#1ABC9C'];
+    const color = colors[state.budget.indexOf(cat) % colors.length];
+    const spentColor = spent > cat.amount ? '#C0392B' : spent > 0 ? '#E67E22' : 'transparent';
+    bars += `
+      <div class="progress-wrap" onclick="showPage({target:document.querySelector('.nav-tab:nth-child(3)')});openCategoryPanel('${cat.id}')" style="cursor:pointer;">
+        <div class="progress-label">
+          <span>${cat.name}</span>
+          <span style="color:var(--gray-600);">$${spent.toLocaleString()} <span style="color:var(--gray-400);">/ $${cat.amount.toLocaleString()}</span></span>
+        </div>
+        <div class="progress-track" style="position:relative;">
+          <div class="progress-fill" style="width:${pct}%;background:${color};opacity:0.25;"></div>
+          <div style="position:absolute;top:0;left:0;height:100%;width:${Math.round((cat.amount/maxAmt)*spentPct/100*100)}%;background:${spentColor};border-radius:3px;"></div>
+        </div>
+      </div>`;
+  });
+  bars += '</div>';
+  document.getElementById('dash-spending-bars').innerHTML = bars;
+
+  const cancelled = state.subscriptions.filter(s => s.status === 'cancelled');
+  const totalSaved = cancelled.reduce((sum, s) => sum + s.amount, 0);
+  let rows = cancelled.map(s => `<tr><td>${s.name} <span class="badge badge-green">done</span></td><td class="td-green">+${fmt(s.amount)}/mo</td></tr>`).join('');
+  rows += `<tr class="tr-total"><td>Total recovered</td><td class="td-green">+${fmt(totalSaved)}/mo</td></tr>`;
+  document.getElementById('dash-cancelled').innerHTML = rows;
+}
+
+// ─── BUDGET TRACKER ───────────────────────────────────────────────────────────
+
+if (!state.budgetExpenses) {
+  state.budgetExpenses = {}; // keyed by category id
+}
+
+function getCatSpent(catId) {
+  return (state.budgetExpenses[catId] || []).reduce((s, e) => s + e.amount, 0);
+}
+
+function renderBudget() {
+  const totalBudgeted = totalBudget();
+  const totalSpent = state.budget.reduce((s, cat) => s + getCatSpent(cat.id), 0);
+  const totalRemaining = totalBudgeted - totalSpent;
+  const pct = Math.min(100, Math.round((totalSpent / totalBudgeted) * 100));
+  const barColor = pct < 70 ? '#1D9E75' : pct < 90 ? '#E67E22' : '#C0392B';
+
+  document.getElementById('budget-overview-metrics').innerHTML = `
+    <div class="metric success">
+      <div class="m-label">Monthly budget</div>
+      <div class="m-value">$${totalBudgeted.toLocaleString()}</div>
+      <div class="m-sub">total set</div>
+    </div>
+    <div class="metric ${totalSpent > totalBudgeted ? 'danger' : 'warning'}">
+      <div class="m-label">Spent so far</div>
+      <div class="m-value">$${totalSpent.toLocaleString()}</div>
+      <div class="m-sub">${pct}% of budget</div>
+    </div>
+    <div class="metric ${totalRemaining >= 0 ? 'success' : 'danger'}">
+      <div class="m-label">Remaining</div>
+      <div class="m-value">${totalRemaining >= 0 ? '$' : '−$'}${Math.abs(totalRemaining).toLocaleString()}</div>
+      <div class="m-sub">this month</div>
+    </div>
+  `;
+
+  let html = `
+    <div style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);padding:12px 16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray-600);margin-bottom:4px;">
+        <span>$0</span><span>Spent $${totalSpent.toLocaleString()} of $${totalBudgeted.toLocaleString()}</span><span>$${totalBudgeted.toLocaleString()}</span>
+      </div>
+      <div style="background:var(--gray-100);border-radius:5px;height:10px;overflow:hidden;">
+        <div style="height:100%;border-radius:5px;background:${barColor};width:${pct}%;transition:width 0.4s;"></div>
+      </div>
+    </div>`;
+
+  state.budget.forEach(cat => {
+    const spent = getCatSpent(cat.id);
+    const remaining = cat.amount - spent;
+    const pctCat = Math.min(100, Math.round((spent / cat.amount) * 100));
+    const catBar = pctCat < 70 ? '#1D9E75' : pctCat < 90 ? '#E67E22' : '#C0392B';
+    const expCount = (state.budgetExpenses[cat.id] || []).length;
+
+    html += `
+      <div class="budget-cat-card" onclick="openCategoryPanel('${cat.id}')">
+        <div class="bcat-header">
+          <div>
+            <div class="bcat-name">${cat.name}</div>
+            ${expCount > 0 ? `<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${expCount} transaction${expCount !== 1 ? 's' : ''}</div>` : ''}
+          </div>
+          <div class="bcat-amounts">
+            <div class="bcat-spent" style="color:${spent === 0 ? 'var(--gray-400)' : spent > cat.amount ? 'var(--red)' : 'var(--gray-900)'};">
+              $${spent.toLocaleString()}
+            </div>
+            <div class="bcat-budget">of $${cat.amount.toLocaleString()} budget</div>
+            <div class="bcat-remaining" style="color:${remaining >= 0 ? 'var(--green-dark)' : 'var(--red)'};">
+              ${remaining >= 0 ? '$' + remaining.toLocaleString() + ' left' : '−$' + Math.abs(remaining).toLocaleString() + ' over'}
+            </div>
+          </div>
+        </div>
+        <div class="bcat-bar-track">
+          <div class="bcat-bar-fill" style="width:${pctCat}%;background:${catBar};"></div>
+        </div>
+        <div class="bcat-tap-hint">Tap to add expenses or view detail →</div>
+      </div>`;
+  });
+
+  document.getElementById('budget-categories').innerHTML = html;
+}
+
+// ─── PANEL ────────────────────────────────────────────────────────────────────
+
+let currentPanelCatId = null;
+
+function openCategoryPanel(catId) {
+  currentPanelCatId = catId;
+  const cat = state.budget.find(c => c.id === catId);
+  if (!cat) return;
+
+  document.getElementById('panel-title').textContent = cat.name;
+  document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('slide-panel').classList.add('open');
+  renderPanelBody(catId);
+}
+
+function closePanel() {
+  document.getElementById('panel-overlay').classList.remove('open');
+  document.getElementById('slide-panel').classList.remove('open');
+  currentPanelCatId = null;
+  renderBudget();
+}
+
+function renderPanelBody(catId) {
+  const cat = state.budget.find(c => c.id === catId);
+  const expenses = state.budgetExpenses[catId] || [];
+  const spent = expenses.reduce((s, e) => s + e.amount, 0);
+  const remaining = cat.amount - spent;
+  const pct = Math.min(100, Math.round((spent / cat.amount) * 100));
+  const barColor = pct < 70 ? '#1D9E75' : pct < 90 ? '#E67E22' : '#C0392B';
+
+  let html = `
+    <!-- Summary -->
+    <div style="background:var(--gray-50);border-radius:var(--radius);padding:14px;margin-bottom:14px;border:1px solid var(--gray-200);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <div>
+          <div style="font-size:11px;color:var(--gray-400);">Spent</div>
+          <div style="font-size:22px;font-weight:600;color:${spent > cat.amount ? 'var(--red)' : 'var(--gray-900)'};">$${spent.toLocaleString()}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--gray-400);">Budget</div>
+          <div style="font-size:22px;font-weight:600;color:var(--gray-400);">$${cat.amount.toLocaleString()}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:var(--gray-400);">Remaining</div>
+          <div style="font-size:22px;font-weight:600;color:${remaining >= 0 ? 'var(--green-dark)' : 'var(--red)'};">${remaining >= 0 ? '$' : '−$'}${Math.abs(remaining).toLocaleString()}</div>
+        </div>
+      </div>
+      <div style="background:var(--gray-200);border-radius:4px;height:8px;overflow:hidden;">
+        <div style="height:100%;border-radius:4px;background:${barColor};width:${pct}%;transition:width 0.4s;"></div>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:4px;text-align:right;">${pct}% used</div>
+    </div>
+
+    <!-- Budget line items -->
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-400);margin-bottom:6px;">Budget breakdown</div>
+    <div style="background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--gray-200);padding:10px 14px;margin-bottom:14px;">
+      <table class="row-table">`;
+
+  cat.items.forEach(item => {
+    html += `<tr><td style="color:var(--gray-600);">${item.name}</td><td>$${item.amount.toLocaleString()}</td></tr>`;
+  });
+  html += `<tr class="tr-total"><td>Total budgeted</td><td>$${cat.amount.toLocaleString()}</td></tr>
+      </table>
+    </div>
+
+    <!-- Add expense form -->
+    <div id="panel-add-form" style="display:none;background:var(--green-light);border-radius:var(--radius);padding:14px;margin-bottom:14px;border:1px solid #9FE1CB;">
+      <div style="font-size:13px;font-weight:600;color:var(--green-dark);margin-bottom:10px;">Add expense</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <input type="text" id="panel-exp-desc" placeholder="Description" style="flex:1;">
+        <input type="number" id="panel-exp-amount" placeholder="$" step="0.01" style="width:80px;">
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <input type="text" id="panel-exp-date" placeholder="Date (e.g. Jun 15)" style="flex:1;">
+        <input type="text" id="panel-exp-store" placeholder="Store / payee" style="flex:1;">
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-primary" onclick="savePanelExpense()">Save</button>
+        <button onclick="document.getElementById('panel-add-form').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gray-400);margin-bottom:6px;">
+      Transactions (${expenses.length})
+    </div>`;
+
+  if (expenses.length) {
+    html += '<div style="background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--gray-200);overflow:hidden;">';
+    expenses.slice().reverse().forEach((exp, ri) => {
+      const i = expenses.length - 1 - ri;
+      html += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--gray-100);">
+          <div>
+            <div style="font-size:13px;font-weight:500;">${exp.desc}</div>
+            <div style="font-size:11px;color:var(--gray-400);">${exp.date || ''}${exp.store ? ' · ' + exp.store : ''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-weight:600;color:var(--red);">−$${exp.amount.toFixed(2)}</span>
+            <button class="btn-danger" onclick="deletePanelExpense('${catId}', ${i})">✕</button>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+  } else {
+    html += `<div style="text-align:center;padding:20px;color:var(--gray-400);font-size:13px;background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--gray-200);">
+      No expenses logged yet.<br>Tap "+ Add" above to record one.
+    </div>`;
+  }
+
+  document.getElementById('panel-body').innerHTML = html;
+}
+
+function showPanelAddForm() {
+  const form = document.getElementById('panel-add-form');
+  if (!form) return;
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    const today = new Date();
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('panel-exp-date').value = months[today.getMonth()] + ' ' + today.getDate();
+    document.getElementById('panel-exp-desc').focus();
+  }
+}
+
+function savePanelExpense() {
+  const desc = document.getElementById('panel-exp-desc').value.trim();
+  const amount = parseFloat(document.getElementById('panel-exp-amount').value) || 0;
+  const date = document.getElementById('panel-exp-date').value.trim();
+  const store = document.getElementById('panel-exp-store').value.trim();
+  if (!desc || !amount) { toast('Description and amount required'); return; }
+
+  if (!state.budgetExpenses[currentPanelCatId]) {
+    state.budgetExpenses[currentPanelCatId] = [];
+  }
+  state.budgetExpenses[currentPanelCatId].push({ desc, amount, date, store });
+  save();
+
+  document.getElementById('panel-exp-desc').value = '';
+  document.getElementById('panel-exp-amount').value = '';
+  document.getElementById('panel-exp-store').value = '';
+  document.getElementById('panel-add-form').style.display = 'none';
+  renderPanelBody(currentPanelCatId);
+  toast('Expense saved');
+}
+
+function deletePanelExpense(catId, i) {
+  state.budgetExpenses[catId].splice(i, 1);
+  save();
+  renderPanelBody(catId);
+  toast('Removed');
+}
+
+
+
+// ─── SUBSCRIPTIONS ────────────────────────────────────────────────────────────
+function renderSubscriptions() {
+  const statuses = ['active', 'suspended', 'ending', 'cancelled'];
+  const labels = { active: 'Active', suspended: 'Suspended', ending: 'Ending soon', cancelled: 'Cancelled' };
+  const badgeClass = { active: 'badge-green', suspended: 'badge-amber', ending: 'badge-blue', cancelled: 'badge-red' };
+  let html = '';
+
+  statuses.forEach(status => {
+    const subs = state.subscriptions.filter(s => s.status === status);
+    if (!subs.length) return;
+    const total = subs.reduce((sum, s) => sum + s.amount, 0);
+    html += `<div class="section-header">${labels[status]} <span style="color:var(--gray-400);font-size:13px;">${fmt(total)}/mo</span></div>`;
+    html += '<div class="card"><table>';
+    subs.forEach(sub => {
+      html += `<tr>
+        <td>
+          ${sub.name}
+          <span class="badge ${badgeClass[sub.status]}">${sub.account}</span>
+          ${sub.note ? `<br><span style="font-size:11px;color:var(--gray-400);">${sub.note}</span>` : ''}
+        </td>
+        <td style="white-space:nowrap;">
+          ${fmt(sub.amount)}/mo
+          <button class="btn-danger" onclick="changeSubStatus(${sub.id})" style="margin-left:6px;">
+            ${sub.status === 'active' || sub.status === 'suspended' ? 'Cancel' : 'Restore'}
+          </button>
+        </td>
+      </tr>`;
+    });
+    html += '</table></div>';
+  });
+
+  document.getElementById('subscriptions-list').innerHTML = html;
+}
+
+function addSubscription() {
+  const name = document.getElementById('sub-name').value.trim();
+  const amount = parseFloat(document.getElementById('sub-amount').value) || 0;
+  const account = document.getElementById('sub-account').value;
+  const status = document.getElementById('sub-status').value;
+  const note = document.getElementById('sub-note').value.trim();
+  if (!name || !amount) { toast('Please enter name and amount'); return; }
+  const newId = Math.max(...state.subscriptions.map(s => s.id), 0) + 1;
+  state.subscriptions.push({ id: newId, name, amount, account, status, note });
+  save();
+  document.getElementById('sub-name').value = '';
+  document.getElementById('sub-amount').value = '';
+  document.getElementById('sub-note').value = '';
+  renderSubscriptions();
+}
+
+function changeSubStatus(id) {
+  const sub = state.subscriptions.find(s => s.id === id);
+  if (!sub) return;
+  if (sub.status === 'active' || sub.status === 'suspended') {
+    sub.status = 'cancelled';
+  } else {
+    sub.status = 'active';
+  }
+  save();
+  renderSubscriptions();
+}
+
+// ─── VISUAL CALENDAR ──────────────────────────────────────────────────────────
+
+let calMonth = 'Jun';
+
+function setCalMonth(m) {
+  calMonth = m;
+  document.getElementById('cal-btn-jun').className = m === 'Jun' ? 'btn-primary btn-sm' : 'btn-sm';
+  document.getElementById('cal-btn-jul').className = m === 'Jul' ? 'btn-primary btn-sm' : 'btn-sm';
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const month = calMonth;
+  const year = 2026;
+  const monthNum = month === 'Jun' ? 5 : 6; // 0-indexed
+  const daysInMonth = new Date(year, monthNum + 1, 0).getDate();
+  const firstDow = new Date(year, monthNum, 1).getDay(); // 0=Sun
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === monthNum;
+  const todayDate = today.getDate();
+
+  // Get events for this month
+  const events = state.calendarEvents.filter(e => e.date.startsWith(month));
+
+  // Group by day number
+  const byDay = {};
+  events.forEach(e => {
+    const day = parseInt(e.date.split(' ')[1]);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+
+  // Running balance — start of month estimated balance
+  // Colette starts ~$1,647 surplus, Rick ~$503
+  const coletteStart = 1647;
+  const rickStart = 503;
+
+  // Calculate daily running totals
+  const dailyColette = {};
+  const dailyRick = {};
+  let runColette = coletteStart;
+  let runRick = rickStart;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayEvents = byDay[d] || [];
+    dayEvents.forEach(e => {
+      if (e.amount === 0) return;
+      if (e.account && e.account.includes('Rick')) {
+        runRick += e.amount;
+      } else {
+        runColette += e.amount;
+      }
+    });
+    dailyColette[d] = Math.round(runColette);
+    dailyRick[d] = Math.round(runRick);
+  }
+
+  // Month summary
+  const totalIncome = events.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+  const totalExpense = events.filter(e => e.type === 'expense').reduce((s, e) => s + Math.abs(e.amount), 0);
+  const net = totalIncome - totalExpense;
+
+  // Build calendar grid
+  const dowLabels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let gridHTML = `
+    <div class="vcal-wrap">
+      <div class="vcal-header">
+        <div class="vcal-month-title">${month === 'Jun' ? 'June' : 'July'} ${year}</div>
+        <div class="vcal-summary">
+          <span style="color:#0F6E56;font-weight:600;">+$${totalIncome.toLocaleString()}</span> in &nbsp;
+          <span style="color:#A32D2D;font-weight:600;">−$${totalExpense.toLocaleString()}</span> out<br>
+          Net: <span style="font-weight:600;color:${net >= 0 ? '#0F6E56' : '#A32D2D'};">${net >= 0 ? '+' : '−'}$${Math.abs(net).toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="vcal-dow">
+        ${dowLabels.map(d => `<div class="vcal-dow-label">${d}</div>`).join('')}
+      </div>
+      <div class="vcal-grid">`;
+
+  // Empty cells before first day
+  for (let i = 0; i < firstDow; i++) {
+    gridHTML += `<div class="vcal-cell empty"></div>`;
+  }
+
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayEvents = byDay[d] || [];
+    const isToday = isCurrentMonth && d === todayDate;
+    const hasEvents = dayEvents.length > 0;
+    const maxShow = 3;
+    const extraCount = Math.max(0, dayEvents.length - maxShow);
+
+    gridHTML += `<div class="vcal-cell ${hasEvents ? 'has-events' : ''} ${isToday ? 'today' : ''}"
+      onclick="${hasEvents ? `openDayPanel(${d}, '${month}')` : ''}">
+      <div class="vcal-day-num">${d}</div>`;
+
+    dayEvents.slice(0, maxShow).forEach(e => {
+      const cls = e.type === 'income' ? 'income' : e.type === 'expense' ? 'expense' : 'neutral';
+      const prefix = e.type === 'income' ? '+' : e.type === 'expense' ? '−' : '';
+      const amtStr = e.amount === 0 ? '—' : prefix + '$' + Math.abs(e.amount).toLocaleString();
+      const shortName = e.desc.length > 14 ? e.desc.substring(0, 13) + '…' : e.desc;
+      gridHTML += `<div class="vcal-dot ${cls}">${amtStr}</div>`;
+    });
+
+    if (extraCount > 0) {
+      gridHTML += `<div class="vcal-dot-more">+${extraCount} more</div>`;
+    }
+
+    gridHTML += `</div>`;
+  }
+
+  // Fill remaining cells
+  const totalCells = firstDow + daysInMonth;
+  const remainder = totalCells % 7;
+  if (remainder > 0) {
+    for (let i = remainder; i < 7; i++) {
+      gridHTML += `<div class="vcal-cell empty"></div>`;
+    }
+  }
+
+  gridHTML += `</div></div>`;
+
+  // Running balance bars
+  const maxBalance = Math.max(...Object.values(dailyColette), ...Object.values(dailyRick), 1);
+  let balHTML = `
+    <div class="vcal-balance-section">
+      <div class="vcal-balance-title">Running balance by day</div>
+      <div style="display:flex;gap:12px;margin-bottom:6px;font-size:11px;">
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#1D9E75;border-radius:2px;display:inline-block;"></span> Colette</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#2980B9;border-radius:2px;display:inline-block;"></span> Rick</span>
+      </div>
+      <div class="vcal-balance-track">`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cPct = Math.max(4, Math.round((Math.max(0, dailyColette[d]) / maxBalance) * 36));
+    const rPct = Math.max(4, Math.round((Math.max(0, dailyRick[d]) / maxBalance) * 36));
+    const cColor = dailyColette[d] < 0 ? '#C0392B' : dailyColette[d] < 500 ? '#E67E22' : '#1D9E75';
+    const rColor = dailyRick[d] < 0 ? '#C0392B' : dailyRick[d] < 200 ? '#E67E22' : '#2980B9';
+    balHTML += `
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:flex-end;height:36px;cursor:pointer;" onclick="openDayPanel(${d}, '${month}')">
+        <div style="width:100%;height:${rPct}px;background:${rColor};border-radius:2px 2px 0 0;opacity:0.7;"></div>
+        <div style="width:100%;height:${cPct}px;background:${cColor};border-radius:2px 2px 0 0;"></div>
+      </div>`;
+  }
+
+  balHTML += `</div>
+      <div class="vcal-balance-labels">
+        <span>Day 1</span>
+        <span>Colette end: <strong style="color:${dailyColette[daysInMonth] >= 0 ? '#0F6E56' : '#A32D2D'};">$${dailyColette[daysInMonth].toLocaleString()}</strong></span>
+        <span>Rick end: <strong style="color:${dailyRick[daysInMonth] >= 0 ? '#2980B9' : '#A32D2D'};">$${dailyRick[daysInMonth].toLocaleString()}</strong></span>
+        <span>Day ${daysInMonth}</span>
+      </div>
+    </div>`;
+
+  // Add event form
+  const addHTML = `
+    <div class="card">
+      <div class="card-title">Add calendar event</div>
+      <div class="form-row">
+        <input type="text" id="cal-date" placeholder="Date (e.g. ${month} 15)">
+        <input type="text" id="cal-desc" placeholder="Description">
+        <input type="number" id="cal-amount" placeholder="Amount" step="0.01">
+      </div>
+      <div class="form-row">
+        <select id="cal-type">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+          <option value="neutral">Note</option>
+        </select>
+        <select id="cal-account">
+          <option value="RBC">Colette RBC</option>
+          <option value="Rick RBC">Rick RBC</option>
+          <option value="Amex">Amex</option>
+          <option value="e-transfer">e-transfer</option>
+        </select>
+        <button class="btn-primary" onclick="addCalendarEvent()">Add</button>
+      </div>
+    </div>`;
+
+  document.getElementById('calendar-content').innerHTML = gridHTML + balHTML + addHTML;
+}
+
+function openDayPanel(day, month) {
+  const dateStr = month + ' ' + day;
+  const dayEvents = state.calendarEvents.filter(e => e.date === dateStr);
+  if (!dayEvents.length) return;
+
+  const monthName = month === 'Jun' ? 'June' : 'July';
+  const dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNum = month === 'Jun' ? 5 : 6;
+  const dayOfWeek = dow[new Date(2026, monthNum, day).getDay()];
+
+  const totalIn = dayEvents.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+  const totalOut = dayEvents.filter(e => e.type === 'expense').reduce((s, e) => s + Math.abs(e.amount), 0);
+
+  let html = `
+    <div class="day-detail-header">
+      <div class="day-detail-date">${dayOfWeek}, ${monthName} ${day}</div>
+      <div style="display:flex;gap:16px;font-size:13px;">
+        ${totalIn > 0 ? `<span style="color:#0F6E56;font-weight:600;">+$${totalIn.toLocaleString()} in</span>` : ''}
+        ${totalOut > 0 ? `<span style="color:#A32D2D;font-weight:600;">−$${totalOut.toLocaleString()} out</span>` : ''}
+        ${totalIn > 0 || totalOut > 0 ? `<span style="color:${totalIn-totalOut >= 0 ? '#0F6E56' : '#A32D2D'};font-weight:600;">Net ${totalIn-totalOut >= 0 ? '+' : '−'}$${Math.abs(totalIn-totalOut).toLocaleString()}</span>` : ''}
+      </div>
+    </div>`;
+
+  dayEvents.forEach((e, i) => {
+    const isIncome = e.type === 'income';
+    const isExpense = e.type === 'expense';
+    const prefix = isIncome ? '+' : isExpense ? '−' : '';
+    const amtStr = e.amount === 0 ? '—' : prefix + '$' + Math.abs(e.amount).toLocaleString();
+    const color = isIncome ? '#0F6E56' : isExpense ? '#A32D2D' : '#854F0B';
+    html += `
+      <div class="day-event-row">
+        <div>
+          <div style="font-weight:500;">${e.desc}</div>
+          ${e.account ? `<div style="font-size:11px;color:var(--gray-400);">${e.account}</div>` : ''}
+          ${e.note ? `<div style="font-size:11px;color:#854F0B;">⚠ ${e.note}</div>` : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;font-weight:700;color:${color};">${amtStr}</span>
+          <button class="btn-danger" onclick="deleteCalEvent(${state.calendarEvents.indexOf(e)})">✕</button>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('panel-title').textContent = monthName + ' ' + day;
+  document.getElementById('panel-body').innerHTML = html;
+  document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('slide-panel').classList.add('open');
+
+  // Override close to re-render calendar
+  document.getElementById('panel-overlay').onclick = () => { closePanel(); renderCalendar(); };
+  document.querySelector('.panel-back').onclick = () => { closePanel(); renderCalendar(); };
+  document.querySelector('#slide-panel .btn-primary').style.display = 'none';
+}
+
+function deleteCalEvent(i) {
+  state.calendarEvents.splice(i, 1);
+  save();
+  closePanel();
+  renderCalendar();
+}
+
+function addCalendarEvent() {
+  const date = document.getElementById('cal-date').value.trim();
+  const desc = document.getElementById('cal-desc').value.trim();
+  const amount = parseFloat(document.getElementById('cal-amount').value) || 0;
+  const type = document.getElementById('cal-type').value;
+  const account = document.getElementById('cal-account').value;
+  if (!date || !desc) { toast('Date and description required'); return; }
+  const finalAmount = type === 'expense' ? -Math.abs(amount) : amount;
+  state.calendarEvents.push({ date, desc, amount: finalAmount, type, account });
+  save();
+  renderCalendar();
+  document.getElementById('cal-date').value = '';
+  document.getElementById('cal-desc').value = '';
+  document.getElementById('cal-amount').value = '';
+  toast('Event added');
+}
+
+
+// ─── FORECAST ─────────────────────────────────────────────────────────────────
+let forecastScenario = 'with';
+
+function setScenario(s) {
+  forecastScenario = s;
+  document.getElementById('btn-with-landmark').classList.toggle('active', s === 'with');
+  document.getElementById('btn-without-landmark').classList.toggle('active', s === 'without');
+  renderForecast();
+}
+
+function renderForecast() {
+  const withLandmark = forecastScenario === 'with';
+  const income = totalIncome(withLandmark);
+  const spending = totalBudget();
+  const surplus = income - spending;
+
+  const cuts = [
+    { name: 'Cancel cleaning service', saving: 630, category: 'if Landmark ends' },
+    { name: 'Stop dining out', saving: 350, category: 'if Landmark ends' },
+    { name: 'Affirm finishes (~4 months)', saving: 187, category: 'temporary' },
+    { name: 'Cancel Peloton', saving: 67, category: 'if Landmark ends' },
+    { name: 'Cancel Calendly', saving: 17, category: 'if Landmark ends' },
+    { name: 'Project car to storage insurance', saving: 126, category: 'if Landmark ends' }
+  ];
+
+  const totalCuts = cuts.reduce((s, c) => s + c.saving, 0);
+  const surplusAfterCuts = surplus + totalCuts;
+  const withEI = surplusAfterCuts + 2600;
+
+  let html = `
+    <div class="metric-grid">
+      <div class="metric ${withLandmark ? 'green' : surplus >= 0 ? 'green' : 'red'}">
+        <div class="m-label">Monthly income</div>
+        <div class="m-value">${fmt(income)}</div>
+        <div class="m-sub">${withLandmark ? 'with Landmark' : 'without Landmark'}</div>
+      </div>
+      <div class="metric">
+        <div class="m-label">Monthly spending</div>
+        <div class="m-value">${fmt(spending)}</div>
+        <div class="m-sub">current budget</div>
+      </div>
+      <div class="metric ${surplus >= 0 ? 'green' : 'red'}">
+        <div class="m-label">${surplus >= 0 ? 'Surplus' : 'Gap'}</div>
+        <div class="m-value">${surplus >= 0 ? '+' : '−'}${fmt(Math.abs(surplus))}</div>
+        <div class="m-sub">per month</div>
+      </div>
+    </div>`;
+
+  if (!withLandmark) {
+    html += `<div class="card">
+      <div class="card-title">Gap-closing cuts available</div>
+      <table>
+        <tr><td>Starting gap</td><td class="td-red">${surplus >= 0 ? '+' : '−'}${fmt(Math.abs(surplus))}</td></tr>`;
+    cuts.forEach(c => {
+      html += `<tr><td>${c.name} <span class="badge badge-amber">${c.category}</span></td><td class="td-green">+${fmt(c.saving)}</td></tr>`;
+    });
+    html += `<tr class="tr-total"><td>Surplus after all cuts</td><td class="${surplusAfterCuts >= 0 ? 'td-green' : 'td-red'}">${surplusAfterCuts >= 0 ? '+' : '−'}${fmt(Math.abs(surplusAfterCuts))}</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">With EI added (~$2,600/mo)</div>
+      <table>
+        <tr><td>Surplus after cuts</td><td class="${surplusAfterCuts >= 0 ? 'td-green' : 'td-red'}">${surplusAfterCuts >= 0 ? '+' : '−'}${fmt(Math.abs(surplusAfterCuts))}</td></tr>
+        <tr><td>EI benefit estimate</td><td class="td-green">+${fmt(2600)}</td></tr>
+        <tr class="tr-total"><td>Total surplus with EI + cuts</td><td class="td-green">+${fmt(withEI)}</td></tr>
+      </table>
+    </div>
+
+    <div class="note">Apply for EI on the same day your last Landmark paycheque is issued. You'll need your Record of Employment (ROE) — your employer has 5 days to issue it. EI pays 55% of insurable earnings, up to ~$668/week (~$2,600/month). There is a 1-week waiting period before payments begin.</div>`;
+  }
+
+  html += `<div class="card">
+    <div class="card-title">Income breakdown</div>
+    <table>
+      ${withLandmark ? `<tr><td>Colette — Landmark Worldwide ×2</td><td class="td-green">+${fmt(state.income.colette_landmark)}</td></tr>` : ''}
+      <tr><td>Colette — CPP</td><td class="td-green">+${fmt(state.income.colette_cpp)}</td></tr>
+      <tr><td>Colette — Old Age Security</td><td class="td-green">+${fmt(state.income.colette_oas)}</td></tr>
+      <tr><td>Rick — Reimer Hardwood ×2</td><td class="td-green">+${fmt(state.income.rick_payroll)}</td></tr>
+      <tr><td>Rick — CPP</td><td class="td-green">+${fmt(state.income.rick_cpp)}</td></tr>
+      <tr><td>Deborah — net contribution</td><td class="td-green">+${fmt(state.income.deborah_net)}</td></tr>
+      <tr class="tr-total"><td>Total</td><td class="td-green">+${fmt(income)}</td></tr>
+    </table>
+  </div>`;
+
+  document.getElementById('forecast-content').innerHTML = html;
+}
+
+// ─── TRANSACTIONS ─────────────────────────────────────────────────────────────
+function renderTransactions() {
+  const txs = state.transactions.slice().reverse();
+  let html = '';
+  if (!txs.length) {
+    html = '<div class="card"><p style="color:var(--gray-400);font-size:13px;text-align:center;padding:20px;">No transactions yet. Add one above.</p></div>';
+  } else {
+    html = '<div class="card"><div class="card-title">Recent transactions</div><table>';
+    txs.forEach((tx, i) => {
+      html += `<tr>
+        <td>
+          <span style="font-weight:500;">${tx.desc}</span><br>
+          <span style="font-size:11px;color:var(--gray-400);">${tx.date} · ${tx.category}</span>
+        </td>
+        <td style="white-space:nowrap;">
+          <span class="${tx.type === 'income' ? 'td-green' : 'td-red'}">${tx.type === 'income' ? '+' : '−'}${fmt(tx.amount)}</span>
+          <button class="btn-danger" onclick="deleteTransaction(${state.transactions.length - 1 - i})" style="margin-left:6px;">✕</button>
+        </td>
+      </tr>`;
+    });
+    html += '</table></div>';
+  }
+  document.getElementById('transactions-list').innerHTML = html;
+}
+
+function addTransaction() {
+  const desc = document.getElementById('tx-desc').value.trim();
+  const amount = parseFloat(document.getElementById('tx-amount').value) || 0;
+  const category = document.getElementById('tx-category').value;
+  const type = document.getElementById('tx-type').value;
+  const date = document.getElementById('tx-date').value.trim() || new Date().toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+  if (!desc || !amount) { toast('Description and amount required'); return; }
+  state.transactions.push({ desc, amount, category, type, date });
+  save();
+  document.getElementById('tx-desc').value = '';
+  document.getElementById('tx-amount').value = '';
+  document.getElementById('tx-date').value = '';
+  renderTransactions();
+}
+
+function deleteTransaction(idx) {
+  state.transactions.splice(idx, 1);
+  save();
+  renderTransactions();
+}
+
+// ─── AMEX PAYOFF ─────────────────────────────────────────────────────────────
+
+const AMEX_BALANCE = 5518;
+const AMEX_RATE_MONTHLY = 0.2199 / 12;
+const AMEX_MIN = 123;
+const MONTHLY_SURPLUS = 4467;
+
+function setAmexPayment(val) {
+  document.getElementById('amex-slider').value = val;
+  updateAmex(val);
+}
+
+function updateAmex(val) {
+  const payment = Math.round(parseFloat(val));
+  document.getElementById('amex-slider-val').textContent = '$' + payment.toLocaleString();
+  renderAmexSchedule(payment);
+  renderAmexImpact(payment);
+  renderAmexAfter(payment);
+}
+
+function calcPayoff(balance, monthlyPayment) {
+  const rate = AMEX_RATE_MONTHLY;
+  let bal = balance;
+  let totalInterest = 0;
+  let months = 0;
+  const schedule = [];
+  const monthNames = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+
+  while (bal > 0 && months < 120) {
+    const interest = bal * rate;
+    totalInterest += interest;
+    const pay = Math.min(monthlyPayment, bal + interest);
+    bal = bal + interest - pay;
+    if (bal < 0.01) bal = 0;
+    schedule.push({
+      month: monthNames[months] || 'M' + (months + 1),
+      interest: Math.round(interest * 100) / 100,
+      payment: Math.round(pay * 100) / 100,
+      balance: Math.round(bal * 100) / 100
+    });
+    months++;
+  }
+  return { months, totalInterest: Math.round(totalInterest * 100) / 100, schedule };
+}
+
+function renderAmex() {
+  const slider = document.getElementById('amex-slider');
+  const payment = parseInt(slider.value);
+  updateAmex(payment);
+}
+
+function renderAmexSchedule(payment) {
+  const { months, totalInterest, schedule } = calcPayoff(AMEX_BALANCE, payment);
+  const interestSaved = Math.round((calcPayoff(AMEX_BALANCE, AMEX_MIN).totalInterest - totalInterest) * 100) / 100;
+
+  document.getElementById('amex-metrics').innerHTML = `
+    <div class="metric ${payment <= AMEX_MIN ? 'red' : 'green'}">
+      <div class="m-label">Months to pay off</div>
+      <div class="m-value">${months >= 120 ? '45+ yrs' : months}</div>
+      <div class="m-sub">${months >= 120 ? 'minimum only' : months === 1 ? 'paid off next month' : 'months total'}</div>
+    </div>
+    <div class="metric ${totalInterest < 200 ? 'green' : totalInterest < 500 ? 'amber' : 'red'}">
+      <div class="m-label">Total interest paid</div>
+      <div class="m-value">$${totalInterest.toLocaleString()}</div>
+      <div class="m-sub">at this payment level</div>
+    </div>
+    <div class="metric green">
+      <div class="m-label">Interest saved vs minimum</div>
+      <div class="m-value">$${Math.max(0, interestSaved).toLocaleString()}</div>
+      <div class="m-sub">compared to paying minimum</div>
+    </div>
+    <div class="metric ${payment > MONTHLY_SURPLUS ? 'red' : 'green'}">
+      <div class="m-label">Surplus remaining</div>
+      <div class="m-value">${payment > MONTHLY_SURPLUS ? '−' : '+'}$${Math.abs(MONTHLY_SURPLUS - payment).toLocaleString()}</div>
+      <div class="m-sub">after this payment</div>
+    </div>
+  `;
+
+  let rows = '';
+  const maxBal = AMEX_BALANCE;
+  schedule.forEach((row, i) => {
+    const pct = Math.round((row.balance / maxBal) * 100);
+    const barColor = pct > 66 ? '#C0392B' : pct > 33 ? '#E67E22' : '#1D9E75';
+    rows += `
+      <div class="month-row">
+        <div class="month-name" style="min-width:50px;font-size:13px;color:var(--gray-600);">${row.month} pay</div>
+        <div style="flex:1;background:var(--gray-100);border-radius:4px;height:8px;overflow:hidden;">
+          <div style="height:100%;border-radius:4px;background:${barColor};width:${pct}%;transition:width 0.3s;"></div>
+        </div>
+        <div style="min-width:55px;text-align:right;font-size:12px;color:var(--gray-600);">−$${row.payment.toLocaleString()}</div>
+        <div style="min-width:70px;text-align:right;font-size:13px;font-weight:600;color:${row.balance === 0 ? '#1D9E75' : row.balance < 1000 ? '#E67E22' : '#C0392B'};">
+          ${row.balance === 0 ? '$0 ✓' : '$' + row.balance.toLocaleString()}
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('amex-schedule').innerHTML = `
+    <div class="card">
+      <div class="card-title">Payment schedule — balance after each payment</div>
+      ${rows}
+    </div>`;
+}
+
+function renderAmexImpact(payment) {
+  const remaining = MONTHLY_SURPLUS - payment;
+  const { months } = calcPayoff(AMEX_BALANCE, payment);
+
+  let warning = '';
+  if (payment > MONTHLY_SURPLUS) {
+    warning = `<div class="note" style="border-left-color:#C0392B;">⚠ This payment exceeds your monthly surplus of $${MONTHLY_SURPLUS.toLocaleString()}. You'd need to draw from savings.</div>`;
+  } else if (payment < 500) {
+    warning = `<div class="note" style="border-left-color:#E67E22;">At this payment level the balance will take ${months} months to clear. Consider paying more to save on interest.</div>`;
+  } else {
+    warning = `<div class="note">This payment leaves $${remaining.toLocaleString()}/month for savings and other spending. Balance clears in ${months} month${months !== 1 ? 's' : ''}.</div>`;
+  }
+
+  document.getElementById('amex-impact').innerHTML = `
+    <div class="card">
+      <div class="card-title">Monthly cash flow impact</div>
+      <table class="row-table">
+        <tr><td>Monthly surplus (with Landmark)</td><td style="color:#3B6D11;">+$${MONTHLY_SURPLUS.toLocaleString()}</td></tr>
+        <tr><td>Amex payment</td><td style="color:#C0392B;">−$${payment.toLocaleString()}</td></tr>
+        <tr class="tr-total"><td>Remaining each month</td><td style="color:${remaining >= 0 ? '#3B6D11' : '#C0392B'};">${remaining >= 0 ? '+' : '−'}$${Math.abs(remaining).toLocaleString()}</td></tr>
+      </table>
+    </div>
+    ${warning}`;
+}
+
+function renderAmexAfter(payment) {
+  const { months } = calcPayoff(AMEX_BALANCE, payment);
+  const monthNames = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const paidOffMonth = monthNames[Math.min(months, monthNames.length - 1)] || 'later';
+  const recurringAmex = 202;
+
+  document.getElementById('amex-after').innerHTML = `
+    <div class="card">
+      <div class="card-title">After the balance is cleared — ${paidOffMonth} 2026${months > 6 ? '+' : ''}</div>
+      <table class="row-table">
+        <tr><td>Ongoing Amex recurring charges</td><td>~$${recurringAmex}/mo</td></tr>
+        <tr><td style="color:var(--gray-400);">Netflix</td><td style="color:var(--gray-400);">$27</td></tr>
+        <tr><td style="color:var(--gray-400);">Spotify</td><td style="color:var(--gray-400);">$14</td></tr>
+        <tr><td style="color:var(--gray-400);">ChatGPT Plus</td><td style="color:var(--gray-400);">$32</td></tr>
+        <tr><td style="color:var(--gray-400);">Shaw (when moved from RBC)</td><td style="color:var(--gray-400);">$129</td></tr>
+        <tr><td>Pay full balance monthly — interest</td><td style="color:#3B6D11;">$0</td></tr>
+        <tr><td>$${payment.toLocaleString()} freed up for savings</td><td style="color:#3B6D11;">+$${payment.toLocaleString()}/mo</td></tr>
+        <tr class="tr-total"><td>Annual interest saved (vs carrying balance)</td><td style="color:#3B6D11;">~$1,356</td></tr>
+      </table>
+    </div>`;
+}
+
+// ─── DEBORAH ──────────────────────────────────────────────────────────────────
+
+if (!state.deborah) {
+  state.deborah = {
+    income: 1300,
+    roomBoard: 700,
+    phone: 70,
+    reserve: 300,
+    transactions: [],
+    goals: [
+      { id: 1, name: 'Emergency fund', target: 500, saved: 0 },
+      { id: 2, name: 'Hockey jersey', target: 150, saved: 0 }
+    ],
+    medicalExpenses: [],
+    reserveBalance: 0
+  };
+}
+
+const DEB_TIPS = [
+  { emoji: '🐷', tip: "The secret millionaires use: pay yourself FIRST. The second your money arrives, put $20 aside before you spend a single dollar. You won't even miss it — but it adds up to $240 a year!" },
+  { emoji: '⏳', tip: "The 24-hour rule: see something you want? Wait 24 hours before buying it. If you still want it tomorrow, maybe go for it. If you forgot about it — you just saved that money!" },
+  { emoji: '☕', tip: "Small spending adds up FAST. A $5 drink every day = $150/month = $1,800/year. That's a trip. That's a laptop. That's a LOT of hockey jerseys. Being aware is everything." },
+  { emoji: '🎯', tip: "Goals make saving feel real. Pick ONE thing you really want and give it a name. Every time you save instead of spend, you're one step closer. Your brain loves a target!" },
+  { emoji: '🧠', tip: "Future You is a real person. Every dollar you save is a gift to Future You. Future You will be SO grateful. Present You might be a little grumpy, but Future You wins!" },
+  { emoji: '📊', tip: "Track everything for one month — just write it down. Most people are genuinely shocked where their money goes. Awareness is the first superpower of money." },
+  { emoji: '💪', tip: "A good month left over? Don't just spend it! Add it to one of your goals. Even $10 extra toward something you want is better than $10 disappearing on nothing." },
+  { emoji: '🛡️', tip: "Your health reserve is your safety net. It means if something unexpected happens, it's covered — no panic, no stress. That peace of mind is worth more than you think." }
+];
+
+const DEB_BADGES = {
+  crushingIt:   { emoji: '🏆', label: 'Goal Crusher',    color: '#F4C430', bg: '#FFFBEA', msg: 'You are absolutely SMASHING it this month!' },
+  smartSaver:   { emoji: '⭐', label: 'Smart Saver',     color: '#1D9E75', bg: '#E1F5EE', msg: 'Look at you being responsible and awesome!' },
+  doingOk:      { emoji: '👍', label: 'Doing OK',        color: '#2980B9', bg: '#EBF5FB', msg: 'Solid month! Keep it going!' },
+  watchOut:     { emoji: '🐻', label: 'Watch Out Bear',  color: '#E67E22', bg: '#FEF5E7', msg: 'Getting close to the edge — slow down a little!' },
+  oopsMonth:    { emoji: '😬', label: 'Oops Month',      color: '#C0392B', bg: '#FDEDEC', msg: 'Went over this month. That\'s okay — learn from it!' }
+};
+
+function debGetBadge(pct) {
+  if (pct === 0) return DEB_BADGES.smartSaver;
+  if (pct <= 40) return DEB_BADGES.crushingIt;
+  if (pct <= 70) return DEB_BADGES.smartSaver;
+  if (pct <= 90) return DEB_BADGES.doingOk;
+  if (pct <= 100) return DEB_BADGES.watchOut;
+  return DEB_BADGES.oopsMonth;
+}
+
+function debGetHeroContent(remaining, pct, monthly) {
+  if (pct === 0) return {
+    bg: 'linear-gradient(135deg, #1D9E75, #27AE60)',
+    emoji: '✨🌟✨',
+    title: "Deborah's Money",
+    sub: `$${monthly} ready to go — fresh month!`,
+    amt: '$' + monthly,
+    amtColor: '#fff'
+  };
+  if (pct <= 40) return {
+    bg: 'linear-gradient(135deg, #1D9E75, #0F6E56)',
+    emoji: '🌟⭐🌟',
+    title: 'Killing it, Deborah! 🎉',
+    sub: `Only spent ${pct}% — you\'re doing amazing!`,
+    amt: '+$' + remaining + ' left',
+    amtColor: '#E1F5EE'
+  };
+  if (pct <= 70) return {
+    bg: 'linear-gradient(135deg, #2980B9, #185FA5)',
+    emoji: '👍💙👍',
+    title: 'Looking good, Deborah!',
+    sub: `${pct}% spent — still plenty of room`,
+    amt: '$' + remaining + ' remaining',
+    amtColor: '#EBF5FB'
+  };
+  if (pct <= 90) return {
+    bg: 'linear-gradient(135deg, #E67E22, #CA6F1E)',
+    emoji: '🐻⚠️🐻',
+    title: 'Heads up, Deborah!',
+    sub: `${pct}% spent — starting to get tight`,
+    amt: 'Only $' + remaining + ' left',
+    amtColor: '#FEF5E7'
+  };
+  if (pct <= 100) return {
+    bg: 'linear-gradient(135deg, #C0392B, #A93226)',
+    emoji: '🚨😬🚨',
+    title: 'Almost out, Deborah!',
+    sub: `${pct}% spent — nearly at the limit!`,
+    amt: 'Just $' + remaining + ' left',
+    amtColor: '#FDEDEC'
+  };
+  return {
+    bg: 'linear-gradient(135deg, #7D3C98, #6C3483)',
+    emoji: '😬💸😬',
+    title: 'Oops... over budget!',
+    sub: 'Went $' + Math.abs(remaining) + ' over this month. It happens — learn from it!',
+    amt: '−$' + Math.abs(remaining),
+    amtColor: '#F5EEF8'
+  };
+}
+
+function debGetVibeMessage(remaining, pct, monthly) {
+  if (pct === 0) return `🎊 Fresh start! You have the full $${monthly} this month. The whole thing. Don't spend it all at once! 😄`;
+  if (pct <= 25) return `🌟 Wow, you're barely spending anything! $${remaining} still in your pocket. Future Deborah is sending you a thank-you card right now. 💌`;
+  if (pct <= 50) return `⭐ Halfway through your budget and still going strong! $${remaining} left — you're doing this! Keep it up! 💪`;
+  if (pct <= 70) return `👍 Still in good shape! $${remaining} remaining. Just stay mindful of the little stuff — it sneaks up fast! 🕵️`;
+  if (pct <= 85) return `🐻 $${remaining} left and the month isn't over yet. Maybe pause before the next purchase and ask: do I NEED this or do I just WANT it right now?`;
+  if (pct <= 100) return `😬 Only $${remaining} left! This is the danger zone. Every dollar counts now. Can you make it to the end of the month? You've got this... maybe! 😅`;
+  return `💸 Went $${Math.abs(remaining)} over budget this month. Here's the lesson: that money has to come from somewhere — which means next month starts tighter. What would you do differently? 🤔`;
+}
+
+function launchFireworks() {
+  const canvas = document.getElementById('deb-fireworks');
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#F4C430','#1D9E75','#E74C3C','#2980B9','#E67E22','#9B59B6','#1ABC9C'];
+
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.6,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.5) * 6 - 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 6 + 2,
+      life: 1
+    });
+  }
+
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1;
+      p.life -= 0.015;
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    frame++;
+    if (frame < 100) {
+      requestAnimationFrame(animate);
+    } else {
+      canvas.style.display = 'none';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  animate();
+}
+
+function renderDeborah() {
+  const d = state.deborah;
+  const monthly = d.income - d.roomBoard - d.phone - d.reserve;
+  const spent = d.transactions.reduce((s, t) => s + t.amount, 0);
+  const remaining = monthly - spent;
+  const pct = monthly > 0 ? Math.min(110, Math.round((spent / monthly) * 100)) : 0;
+  const reserveTotal = d.reserveBalance || 0;
+  const reserveSpent = d.medicalExpenses.reduce((s, e) => s + e.amount, 0);
+  const reserveNet = reserveTotal - reserveSpent;
+
+  // Hero banner
+  const hero = debGetHeroContent(remaining, pct, monthly);
+  document.getElementById('deb-hero').style.background = hero.bg;
+  document.getElementById('deb-hero').innerHTML = `
+    <div style="font-size:28px;margin-bottom:4px;">${hero.emoji}</div>
+    <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;">${hero.title}</div>
+    <div style="font-size:36px;font-weight:800;color:#fff;margin:8px 0;">${hero.amt}</div>
+    <div style="font-size:13px;color:${hero.amtColor};">${hero.sub}</div>
+  `;
+
+  // Badge
+  const badge = debGetBadge(pct);
+  document.getElementById('deb-badge').innerHTML = `
+    <div style="display:inline-flex;align-items:center;gap:8px;background:${badge.bg};border:2px solid ${badge.color};border-radius:20px;padding:8px 16px;">
+      <span style="font-size:20px;">${badge.emoji}</span>
+      <span style="font-weight:700;color:${badge.color};font-size:14px;">${badge.label}</span>
+    </div>
+    <div style="font-size:12px;color:var(--gray-600);margin-top:6px;">${badge.msg}</div>
+  `;
+
+  // Metrics
+  document.getElementById('deb-metrics').innerHTML = `
+    <div class="metric ${remaining >= 100 ? 'success' : remaining >= 0 ? 'warning' : 'danger'}">
+      <div class="m-label">💰 Remaining</div>
+      <div class="m-value">${remaining >= 0 ? '$' + remaining.toFixed(0) : '−$' + Math.abs(remaining).toFixed(0)}</div>
+      <div class="m-sub">of $${monthly} this month</div>
+    </div>
+    <div class="metric ${pct < 70 ? 'success' : pct < 90 ? 'warning' : 'danger'}">
+      <div class="m-label">📊 Used so far</div>
+      <div class="m-value">${pct}%</div>
+      <div class="m-sub">$${spent.toFixed(0)} spent</div>
+    </div>
+    <div class="metric success">
+      <div class="m-label">🏥 Health reserve</div>
+      <div class="m-value">$${Math.max(0, reserveNet).toFixed(0)}</div>
+      <div class="m-sub">safe with Colette</div>
+    </div>
+  `;
+
+  // Progress bar
+  const barPct = Math.min(100, pct);
+  const barColor = pct <= 50 ? '#1D9E75' : pct <= 80 ? '#E67E22' : '#C0392B';
+  const stars = pct <= 30 ? '⭐⭐⭐⭐⭐' : pct <= 60 ? '⭐⭐⭐⭐' : pct <= 80 ? '⭐⭐⭐' : pct <= 95 ? '⭐⭐' : '⭐';
+  document.getElementById('deb-progress-bar-wrap').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray-600);margin-bottom:4px;">
+      <span>$0</span>
+      <span>${stars}</span>
+      <span>$${monthly}</span>
+    </div>
+    <div style="background:var(--gray-100);border-radius:6px;height:14px;overflow:hidden;margin-bottom:6px;">
+      <div style="height:100%;border-radius:6px;background:${barColor};width:${barPct}%;transition:width 0.6s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-400);">
+      <span>Spent: $${spent.toFixed(0)}</span>
+      <span>${pct}% used</span>
+      <span>Left: $${Math.max(0, remaining).toFixed(0)}</span>
+    </div>
+  `;
+
+  // Vibe message
+  document.getElementById('deb-vibe-message').innerHTML = `
+    <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:10px 12px;border-left:4px solid ${barColor};font-size:13px;line-height:1.7;">
+      ${debGetVibeMessage(remaining, pct, monthly)}
+    </div>
+  `;
+
+  // Transactions
+  const cats = {};
+  d.transactions.forEach(t => { cats[t.category] = (cats[t.category] || 0) + t.amount; });
+  let spendHtml = '';
+  if (d.transactions.length) {
+    spendHtml += '<div style="margin-bottom:8px;">';
+    Object.entries(cats).sort((a,b) => b[1]-a[1]).forEach(([cat, amt]) => {
+      spendHtml += `<span style="display:inline-block;background:var(--gray-100);border-radius:12px;padding:3px 10px;font-size:11px;margin:2px 3px 2px 0;">${cat}: $${amt.toFixed(0)}</span>`;
+    });
+    spendHtml += '</div>';
+    spendHtml += '<div>';
+    d.transactions.slice().reverse().forEach((tx, ri) => {
+      const i = d.transactions.length - 1 - ri;
+      spendHtml += `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--gray-100);font-size:13px;">
+        <span>${tx.desc} <span style="font-size:11px;color:var(--gray-400);">${tx.category}</span></span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span style="font-weight:600;color:var(--red);">−$${tx.amount.toFixed(2)}</span>
+          <button class="btn-danger" onclick="deleteDebTransaction(${i})">✕</button>
+        </span>
+      </div>`;
+    });
+    spendHtml += '</div>';
+  } else {
+    spendHtml = `<p style="font-size:13px;color:var(--gray-400);text-align:center;padding:16px 0;">Nothing logged yet! 🎉 Your $230 is all yours.</p>`;
+  }
+  document.getElementById('deb-spending-list').innerHTML = spendHtml;
+
+  // Goals — fun version
+  let goalsHtml = '';
+  if (d.goals.length) {
+    d.goals.forEach((goal, i) => {
+      const pctG = Math.min(100, Math.round((goal.saved / goal.target) * 100));
+      const remaining = Math.max(0, goal.target - goal.saved);
+      const isComplete = pctG >= 100;
+      const barCol = isComplete ? '#F4C430' : pctG >= 50 ? '#1D9E75' : '#2980B9';
+      const starsG = isComplete ? '🌟🌟🌟' : pctG >= 75 ? '⭐⭐' : pctG >= 25 ? '⭐' : '';
+      goalsHtml += `
+        <div style="margin-bottom:16px;padding:14px;border-radius:var(--radius);border:2px solid ${isComplete ? '#F4C430' : 'var(--gray-200)'};background:${isComplete ? '#FFFBEA' : 'var(--white)'};">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div>
+              <div style="font-weight:700;font-size:15px;">${isComplete ? '🏆 ' : '🎯 '}${goal.name} ${starsG}</div>
+              <div style="font-size:12px;color:var(--gray-400);margin-top:2px;">$${goal.saved} saved of $${goal.target} goal</div>
+            </div>
+            <div style="font-size:22px;font-weight:800;color:${barCol};">${pctG}%</div>
+          </div>
+          <div style="background:var(--gray-100);border-radius:5px;height:12px;overflow:hidden;margin-bottom:8px;">
+            <div style="height:100%;border-radius:5px;background:${barCol};width:${pctG}%;transition:width 0.5s;"></div>
+          </div>
+          ${isComplete
+            ? `<div style="text-align:center;font-size:14px;font-weight:700;color:#B7950B;padding:4px;">🎉 YOU DID IT! Goal complete! 🎉</div>`
+            : `<div style="font-size:12px;color:var(--gray-600);margin-bottom:8px;">Only <strong>$${remaining}</strong> to go! You've got this! 💪</div>`
+          }
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn-sm" onclick="addDebGoalSaving(${i}, 10)" style="background:#E1F5EE;border-color:#9FE1CB;color:#0F6E56;">+$10 ⭐</button>
+            <button class="btn-sm" onclick="addDebGoalSaving(${i}, 20)" style="background:#E1F5EE;border-color:#9FE1CB;color:#0F6E56;">+$20 🌟</button>
+            <button class="btn-sm" onclick="addDebGoalSaving(${i}, 50)" style="background:#E1F5EE;border-color:#9FE1CB;color:#0F6E56;">+$50 🏆</button>
+            <button class="btn-danger" onclick="deleteDebGoal(${i})">✕ Remove</button>
+          </div>
+        </div>`;
+    });
+  } else {
+    goalsHtml = `<p style="font-size:13px;color:var(--gray-400);text-align:center;padding:16px 0;">No goals yet! Add something you're saving for ⭐</p>`;
+  }
+  document.getElementById('deb-goals-list').innerHTML = goalsHtml;
+
+  // Health reserve
+  document.getElementById('deb-reserve').innerHTML = `
+    <table class="row-table">
+      <tr><td>$300/month held for you</td><td style="color:var(--green);">+$${reserveTotal.toFixed(0)}</td></tr>
+      <tr><td>Medical & dental expenses used</td><td style="color:var(--red);">−$${reserveSpent.toFixed(0)}</td></tr>
+      <tr class="tr-total"><td>Your reserve balance</td><td style="color:${reserveNet >= 0 ? '#1D9E75' : '#C0392B'};">$${Math.max(0,reserveNet).toFixed(0)} 🛡️</td></tr>
+    </table>`;
+
+  let medHtml = '';
+  d.medicalExpenses.slice().reverse().forEach((e, ri) => {
+    const idx = d.medicalExpenses.length - 1 - ri;
+    medHtml += `<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:0.5px solid var(--gray-100);">
+      <span>${e.desc}</span>
+      <span style="display:flex;align-items:center;gap:8px;">
+        <span style="color:var(--red);font-weight:600;">−$${e.amount.toFixed(2)}</span>
+        <button class="btn-danger" onclick="deleteDebMedical(${idx})">✕</button>
+      </span>
+    </div>`;
+  });
+  document.getElementById('deb-medical-list').innerHTML = medHtml;
+
+  // Tip
+  const tipIdx = new Date().getMonth() % DEB_TIPS.length;
+  const tip = DEB_TIPS[tipIdx];
+  document.getElementById('deb-tip').innerHTML = `<span style="font-size:24px;">${tip.emoji}</span> ${tip.tip}`;
+}
+
+function addDebTransaction() {
+  const desc = document.getElementById('deb-tx-desc').value.trim();
+  const amount = parseFloat(document.getElementById('deb-tx-amount').value) || 0;
+  const category = document.getElementById('deb-tx-cat').value;
+  if (!desc || !amount) { toast('Enter description and amount'); return; }
+  state.deborah.transactions.push({ desc, amount, category });
+  save();
+  document.getElementById('deb-tx-desc').value = '';
+  document.getElementById('deb-tx-amount').value = '';
+  renderDeborah();
+}
+
+function deleteDebTransaction(i) {
+  state.deborah.transactions.splice(i, 1);
+  save();
+  renderDeborah();
+}
+
+function addDebGoal() {
+  const name = document.getElementById('deb-goal-name').value.trim();
+  const target = parseFloat(document.getElementById('deb-goal-target').value) || 0;
+  if (!name || !target) { toast('Enter goal name and target amount'); return; }
+  const newId = Math.max(...state.deborah.goals.map(g => g.id), 0) + 1;
+  state.deborah.goals.push({ id: newId, name, target, saved: 0 });
+  save();
+  document.getElementById('deb-goal-name').value = '';
+  document.getElementById('deb-goal-target').value = '';
+  renderDeborah();
+  toast('New goal added! ⭐');
+}
+
+function addDebGoalSaving(i, amount) {
+  const goal = state.deborah.goals[i];
+  const wasComplete = goal.saved >= goal.target;
+  goal.saved = Math.min(goal.target, (goal.saved || 0) + amount);
+  const nowComplete = goal.saved >= goal.target;
+  save();
+  renderDeborah();
+  if (nowComplete && !wasComplete) {
+    launchFireworks();
+    toast('🎉 GOAL COMPLETE! Amazing job Deborah!');
+  } else {
+    toast(`+$${amount} saved! Keep going! ⭐`);
+  }
+}
+
+function deleteDebGoal(i) {
+  state.deborah.goals.splice(i, 1);
+  save();
+  renderDeborah();
+}
+
+function addDebReserveMonth() {
+  state.deborah.reserveBalance = (state.deborah.reserveBalance || 0) + state.deborah.reserve;
+  save();
+  renderDeborah();
+  toast('$300 added to health reserve 🛡️');
+}
+
+function addDebMedical() {
+  const desc = document.getElementById('deb-med-desc').value.trim();
+  const amount = parseFloat(document.getElementById('deb-med-amount').value) || 0;
+  if (!desc || !amount) { toast('Enter description and amount'); return; }
+  state.deborah.medicalExpenses.push({ desc, amount });
+  save();
+  document.getElementById('deb-med-desc').value = '';
+  document.getElementById('deb-med-amount').value = '';
+  renderDeborah();
+}
+
+function deleteDebMedical(i) {
+  state.deborah.medicalExpenses.splice(i, 1);
+  save();
+  renderDeborah();
+}
+
+
+
+// ─── RICK ─────────────────────────────────────────────────────────────────────
+
+if (!state.rick) {
+  state.rick = {
+    personal: {
+      icbc_commuter: 104,
+      icbc_family: 144,
+      icbc_project: 151,
+      fuel_commute: 325,
+      fuel_personal: 125,
+      maintenance: 150,
+      lunch: 60,
+      personal: 50,
+      savings: 1000
+    },
+    transactions: []
+  };
+}
+
+const RICK_INCOME = 6169;
+const RICK_HOUSEHOLD = 3557;
+
+const RICK_LABELS = {
+  icbc_commuter: 'ICBC — commuter vehicle',
+  icbc_family: 'ICBC — family car',
+  icbc_project: 'ICBC — project car',
+  fuel_commute: 'Fuel — commute',
+  fuel_personal: 'Fuel — personal',
+  maintenance: 'Vehicle maintenance & repairs',
+  lunch: 'Rick & Deborah Saturday lunch',
+  personal: 'Occasional personal purchases',
+  savings: 'Emergency savings'
+};
+
+function rickPersonalTotal() {
+  return Object.values(state.rick.personal).reduce((s, v) => s + v, 0);
+}
+
+function rickSurplus() {
+  return RICK_INCOME - RICK_HOUSEHOLD - rickPersonalTotal();
+}
+
+function renderRick() {
+  const personal = rickPersonalTotal();
+  const surplus = rickSurplus();
+  const txSpent = state.rick.transactions.reduce((s, t) => s + t.amount, 0);
+
+  document.getElementById('rick-surplus-display').textContent = '$' + Math.max(0, surplus).toLocaleString();
+
+  document.getElementById('rick-metrics').innerHTML = `
+    <div class="metric success">
+      <div class="m-label">Monthly income</div>
+      <div class="m-value">$${RICK_INCOME.toLocaleString()}</div>
+      <div class="m-sub">payroll + CPP</div>
+    </div>
+    <div class="metric danger">
+      <div class="m-label">Household bills</div>
+      <div class="m-value">$${RICK_HOUSEHOLD.toLocaleString()}</div>
+      <div class="m-sub">mortgage + Amex</div>
+    </div>
+    <div class="metric danger">
+      <div class="m-label">Personal expenses</div>
+      <div class="m-value">$${personal.toLocaleString()}</div>
+      <div class="m-sub">vehicles, fuel, savings</div>
+    </div>
+    <div class="metric ${surplus >= 0 ? 'success' : 'danger'}">
+      <div class="m-label">Surplus</div>
+      <div class="m-value">${surplus >= 0 ? '+' : '−'}$${Math.abs(surplus).toLocaleString()}</div>
+      <div class="m-sub">after all obligations</div>
+    </div>
+  `;
+
+  // Update personal table cells
+  Object.keys(state.rick.personal).forEach(key => {
+    const cell = document.getElementById('rick-' + key);
+    if (cell && !cell.querySelector('input')) {
+      cell.textContent = '−$' + state.rick.personal[key].toLocaleString();
+    }
+  });
+
+  document.getElementById('rick-personal-total').textContent = '−$' + personal.toLocaleString();
+  document.getElementById('rick-summary-personal').textContent = '−$' + personal.toLocaleString();
+  document.getElementById('rick-summary-surplus').textContent = (surplus >= 0 ? '+' : '−') + '$' + Math.abs(surplus).toLocaleString();
+
+  // Transactions
+  let txHtml = '';
+  if (state.rick.transactions.length) {
+    state.rick.transactions.slice().reverse().forEach((tx, ri) => {
+      const i = state.rick.transactions.length - 1 - ri;
+      txHtml += `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--gray-100);font-size:13px;">
+        <span>${tx.desc} <span style="font-size:11px;color:var(--gray-400);">${tx.category}</span></span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span style="font-weight:600;color:var(--red);">−$${tx.amount.toFixed(2)}</span>
+          <button class="btn-danger" onclick="deleteRickTransaction(${i})">✕</button>
+        </span>
+      </div>`;
+    });
+  } else {
+    txHtml = '<p style="font-size:13px;color:var(--gray-400);text-align:center;padding:12px 0;">No transactions logged yet.</p>';
+  }
+  document.getElementById('rick-tx-list').innerHTML = txHtml;
+}
+
+function editRickItem(key) {
+  const cellId = 'rick-' + key;
+  const cell = document.getElementById(cellId);
+  if (!cell || cell.querySelector('input')) return;
+  const current = state.rick.personal[key];
+  cell.innerHTML = `<input class="edit-input" type="number" value="${current}"
+    onblur="saveRickItem('${key}', this.value)"
+    onkeydown="if(event.key==='Enter')this.blur()">`;
+  cell.querySelector('input').focus();
+}
+
+function saveRickItem(key, val) {
+  state.rick.personal[key] = parseFloat(val) || 0;
+  save();
+  renderRick();
+}
+
+function addRickTransaction() {
+  const desc = document.getElementById('rick-tx-desc').value.trim();
+  const amount = parseFloat(document.getElementById('rick-tx-amount').value) || 0;
+  const category = document.getElementById('rick-tx-cat').value;
+  if (!desc || !amount) { toast('Enter description and amount'); return; }
+  state.rick.transactions.push({ desc, amount, category });
+  save();
+  document.getElementById('rick-tx-desc').value = '';
+  document.getElementById('rick-tx-amount').value = '';
+  renderRick();
+}
+
+function deleteRickTransaction(i) {
+  state.rick.transactions.splice(i, 1);
+  save();
+  renderRick();
+}
+
+// ─── GROCERIES ────────────────────────────────────────────────────────────────
+
+if (!state.groceries) {
+  state.groceries = {
+    weeklyBudget: 220,
+    monthlyBudget: 1270,
+    weeks: [],
+    extras: []
+  };
+}
+
+function addGroceryWeek() {
+  const form = document.getElementById('groc-add-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    const today = new Date();
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('groc-date').value = months[today.getMonth()] + ' ' + today.getDate();
+  }
+}
+
+function saveGroceryWeek() {
+  const date = document.getElementById('groc-date').value.trim();
+  const store = document.getElementById('groc-store').value.trim();
+  const amount = parseFloat(document.getElementById('groc-amount').value) || 0;
+  const notes = document.getElementById('groc-notes').value.trim();
+  if (!date || !amount) { toast('Date and amount required'); return; }
+
+  const cats = [];
+  ['produce','meat','dairy','pantry','household','pet','supplements','treats'].forEach(cat => {
+    if (document.getElementById('groc-cat-' + cat).checked) cats.push(cat);
+  });
+
+  state.groceries.weeks.push({ date, store, amount, cats, notes });
+  save();
+  document.getElementById('groc-add-form').style.display = 'none';
+  document.getElementById('groc-store').value = '';
+  document.getElementById('groc-amount').value = '';
+  document.getElementById('groc-notes').value = '';
+  ['produce','meat','dairy','pantry','household','pet','supplements','treats'].forEach(cat => {
+    document.getElementById('groc-cat-' + cat).checked = false;
+  });
+  renderGroceries();
+}
+
+function deleteGroceryWeek(i) {
+  state.groceries.weeks.splice(i, 1);
+  save();
+  renderGroceries();
+}
+
+function addGroceryExtra() {
+  const desc = document.getElementById('groc-extra-desc').value.trim();
+  const amount = parseFloat(document.getElementById('groc-extra-amount').value) || 0;
+  const cat = document.getElementById('groc-extra-cat').value;
+  if (!desc || !amount) { toast('Description and amount required'); return; }
+  state.groceries.extras.push({ desc, amount, cat });
+  save();
+  document.getElementById('groc-extra-desc').value = '';
+  document.getElementById('groc-extra-amount').value = '';
+  renderGroceries();
+}
+
+function deleteGroceryExtra(i) {
+  state.groceries.extras.splice(i, 1);
+  save();
+  renderGroceries();
+}
+
+function renderGroceries() {
+  const g = state.groceries;
+  const weeklySpent = g.weeks.reduce((s, w) => s + w.amount, 0);
+  const extraSpent = g.extras.reduce((s, e) => s + e.amount, 0);
+  const totalSpent = weeklySpent + extraSpent;
+  const remaining = g.monthlyBudget - totalSpent;
+  const pct = Math.min(100, Math.round((totalSpent / g.monthlyBudget) * 100));
+  const weeklyBudget = g.weeklyBudget;
+  const weeksLeft = Math.max(0, 4 - g.weeks.length);
+
+  document.getElementById('groc-metrics').innerHTML = `
+    <div class="metric ${remaining >= 200 ? 'success' : remaining >= 0 ? 'warning' : 'danger'}">
+      <div class="m-label">Remaining this month</div>
+      <div class="m-value">${remaining >= 0 ? '$' + remaining.toFixed(0) : '−$' + Math.abs(remaining).toFixed(0)}</div>
+      <div class="m-sub">of $${g.monthlyBudget} budget</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Weekly shops logged</div>
+      <div class="m-value">${g.weeks.length}</div>
+      <div class="m-sub">${weeksLeft > 0 ? weeksLeft + ' week' + (weeksLeft > 1 ? 's' : '') + ' left' : 'all weeks logged'}</div>
+    </div>
+    <div class="metric ${weeklySpent / Math.max(1, g.weeks.length) <= weeklyBudget ? 'success' : 'danger'}">
+      <div class="m-label">Avg weekly spend</div>
+      <div class="m-value">$${g.weeks.length ? Math.round(weeklySpent / g.weeks.length) : 0}</div>
+      <div class="m-sub">budget is $${weeklyBudget}/wk</div>
+    </div>
+    <div class="metric">
+      <div class="m-label">Extra purchases</div>
+      <div class="m-value">$${extraSpent.toFixed(0)}</div>
+      <div class="m-sub">Instacart, pet, supplements</div>
+    </div>
+  `;
+
+  // Weekly shops list
+  let weeksHtml = '';
+  if (g.weeks.length) {
+    g.weeks.slice().reverse().forEach((week, ri) => {
+      const i = g.weeks.length - 1 - ri;
+      const overBudget = week.amount > weeklyBudget;
+      const diff = Math.abs(week.amount - weeklyBudget);
+      const pctBar = Math.min(100, Math.round((week.amount / weeklyBudget) * 100));
+      const barColor = week.amount <= weeklyBudget ? '#1D9E75' : '#C0392B';
+      weeksHtml += `
+        <div class="card" style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <div style="font-weight:600;font-size:14px;">${week.date} — ${week.store || 'Grocery shop'}</div>
+              ${week.cats.length ? `<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${week.cats.join(' · ')}</div>` : ''}
+              ${week.notes ? `<div style="font-size:12px;color:var(--gray-600);margin-top:2px;">${week.notes}</div>` : ''}
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:18px;font-weight:600;color:${overBudget ? '#C0392B' : '#1D9E75'};">$${week.amount.toFixed(2)}</div>
+              <div style="font-size:11px;color:${overBudget ? '#C0392B' : '#3B6D11'};">${overBudget ? '+$' + diff.toFixed(0) + ' over' : '−$' + diff.toFixed(0) + ' under'}</div>
+            </div>
+          </div>
+          <div style="background:var(--gray-100);border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px;">
+            <div style="height:100%;border-radius:4px;background:${barColor};width:${pctBar}%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-400);">
+            <span>$0</span>
+            <span>Budget: $${weeklyBudget}</span>
+          </div>
+          <button class="btn-danger" style="margin-top:8px;" onclick="deleteGroceryWeek(${i})">Remove</button>
+        </div>`;
+    });
+  } else {
+    weeksHtml = '<div class="card"><p style="font-size:13px;color:var(--gray-400);text-align:center;padding:12px 0;">No weekly shops logged yet. Tap "+ Add this week\'s shop" above.</p></div>';
+  }
+  document.getElementById('groc-weeks-list').innerHTML = weeksHtml;
+
+  // Extras list
+  let extrasHtml = '';
+  if (g.extras.length) {
+    extrasHtml = '<table class="row-table">';
+    g.extras.slice().reverse().forEach((e, ri) => {
+      const i = g.extras.length - 1 - ri;
+      extrasHtml += `<tr>
+        <td>${e.desc} <span style="font-size:11px;color:var(--gray-400);">${e.cat}</span></td>
+        <td style="white-space:nowrap;">
+          <span style="color:var(--red);">−$${e.amount.toFixed(2)}</span>
+          <button class="btn-danger" onclick="deleteGroceryExtra(${i})" style="margin-left:6px;">✕</button>
+        </td>
+      </tr>`;
+    });
+    extrasHtml += '</table>';
+  } else {
+    extrasHtml = '<p style="font-size:13px;color:var(--gray-400);text-align:center;padding:8px 0;">Nothing logged yet.</p>';
+  }
+  document.getElementById('groc-extras-list').innerHTML = extrasHtml;
+
+  // Monthly summary
+  const barColor = pct < 70 ? '#1D9E75' : pct < 90 ? '#E67E22' : '#C0392B';
+  document.getElementById('groc-summary-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray-600);margin-bottom:4px;">
+      <span>Spent: $${totalSpent.toFixed(0)}</span>
+      <span>${pct}% of budget</span>
+      <span>Left: $${Math.max(0, remaining).toFixed(0)}</span>
+    </div>
+    <div style="background:var(--gray-100);border-radius:5px;height:12px;overflow:hidden;margin-bottom:12px;">
+      <div style="height:100%;border-radius:5px;background:${barColor};width:${pct}%;transition:width 0.4s;"></div>
+    </div>
+    <table class="row-table">
+      <tr><td>Weekly shops (${g.weeks.length} ×)</td><td>$${weeklySpent.toFixed(0)}</td></tr>
+      <tr><td>Extra purchases</td><td>$${extraSpent.toFixed(0)}</td></tr>
+      <tr class="tr-total"><td>Total spent</td><td style="color:${remaining >= 0 ? '#3B6D11' : '#C0392B'};">$${totalSpent.toFixed(0)} of $${g.monthlyBudget}</td></tr>
+    </table>
+    ${weeksLeft > 0 ? `<div class="note" style="margin-top:10px;">You have ${weeksLeft} shop${weeksLeft > 1 ? 's' : ''} left this month with $${remaining >= 0 ? Math.round(remaining / weeksLeft) : 0} available per shop.</div>` : ''}
+  `;
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderDashboard();
+</script>
+</body>
+</html>
